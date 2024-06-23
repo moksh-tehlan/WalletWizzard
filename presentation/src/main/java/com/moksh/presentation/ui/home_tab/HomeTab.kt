@@ -34,6 +34,7 @@ import com.moksh.presentation.core.theme.addIcon
 import com.moksh.presentation.ui.common.Gap
 import com.moksh.presentation.ui.common.GapSpace
 import com.moksh.presentation.ui.home_tab.components.BalanceItem
+import com.moksh.presentation.ui.home_tab.components.OverviewCard
 import com.moksh.presentation.ui.home_tab.components.SavingsCard
 
 @Composable
@@ -128,6 +129,23 @@ private fun HomeTabView() {
                     text = "Total Balance", style = MaterialTheme.typography.labelSmall
                 )
             }
+        }
+        Gap(size = 25.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            OverviewCard(
+                modifier = Modifier.weight(1f),
+                name = "Normal Savings",
+                amount = "10,000"
+            )
+            Gap(size = 10.dp)
+            OverviewCard(
+                modifier = Modifier.weight(1f),
+                name = "Investments",
+                amount = "10,000"
+            )
         }
         Gap(size = 25.dp)
         Row(

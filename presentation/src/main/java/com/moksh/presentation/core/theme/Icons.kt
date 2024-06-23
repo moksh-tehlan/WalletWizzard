@@ -28,3 +28,7 @@ val addIcon: ImageVector
 val forwardIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.forward_arrow)
+
+val forwardArrowIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.arrow_forward)
