@@ -21,7 +21,7 @@ fun BottomNavigationGraph(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = TabRoutes.ProfileTab,
+        startDestination = TabRoutes.HomeTab,
         enterTransition = { fadeIn(tween(500)) },
         exitTransition = { fadeOut(tween(500)) }
     ) {

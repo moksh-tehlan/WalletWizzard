@@ -35,7 +35,7 @@ fun PassbookViewPager(
 ) {
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(bottom = 110.dp, start = 10.dp, end = 10.dp, top = 10.dp),
+        contentPadding = PaddingValues(bottom = 180.dp, start = 10.dp, end = 10.dp, top = 10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         item {
