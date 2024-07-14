@@ -47,7 +47,7 @@ fun PhoneLoginScreen(
 }
 
 @Composable
-private fun PhoneLoginScreenView(
+fun PhoneLoginScreenView(
     onAction: (PhoneLoginAction) -> Unit,
     state: PhoneLoginState,
 ) {
@@ -76,6 +76,7 @@ private fun PhoneLoginScreenView(
             Gap(size = 70.dp)
             PhoneTextField(
                 value = state.phoneNumber,
+                testTag = "phoneNumberTextField",
                 onValueChange = { onAction(PhoneLoginAction.ChangePhoneNumber(it)) })
             Gap(size = 50.dp)
             WizzardPrimaryButton(
@@ -83,6 +84,8 @@ private fun PhoneLoginScreenView(
                     .fillMaxWidth()
                     .height(60.dp),
                 text = "CONTINUE",
+                buttonTestTag = "continueButton",
+                loaderTestTag = "buttonLoader",
                 isLoading = state.isLoading,
                 enabled = state.buttonEnabled,
                 onClick = { onAction(PhoneLoginAction.OnContinue) },

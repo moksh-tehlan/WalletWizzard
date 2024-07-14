@@ -20,6 +20,8 @@ navigationCompose = "2.8.0-beta03"
 room = "2.6.1"
 timber = "5.0.1"
 securityCryptoKtx = "1.1.0-alpha06"
+truth = "1.4.3"
+uiTestJunit4Android = "1.7.0-beta03"
 
 #Project
 projectApplicationId = "com.moksh.walletwizzard"
@@ -54,6 +56,9 @@ kotlinx-serialization-json-jvm = { module = "org.jetbrains.kotlinx:kotlinx-seria
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 androidx-security-crypto-ktx = { module = "androidx.security:security-crypto-ktx", version.ref = "securityCryptoKtx" }
+androidx-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android", version.ref = "uiTestJunit4Android" }
+truth = { module = "com.google.truth:truth", version.ref = "truth" }
+ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "uiTestJunit4Android" }
 
 # Gradle
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
