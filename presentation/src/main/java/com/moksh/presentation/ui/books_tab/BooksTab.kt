@@ -2,34 +2,29 @@ package com.moksh.presentation.ui.books_tab
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,9 +36,8 @@ import com.moksh.presentation.core.theme.WizzardWhite
 import com.moksh.presentation.core.theme.WizzardYellow
 import com.moksh.presentation.core.theme.addIcon
 import com.moksh.presentation.core.theme.passBookIcon
-import com.moksh.presentation.ui.books_tab.components.BooksViewPager
 import com.moksh.presentation.ui.common.Gap
-import kotlinx.coroutines.launch
+import com.moksh.presentation.ui.home_tab.components.BalanceItem
 
 @Composable
 fun BooksTab() {
@@ -52,71 +46,35 @@ fun BooksTab() {
 
 @Composable
 private fun BooksTabView() {
-    val pagerState = rememberPagerState(pageCount = { 2 }, initialPage = 0)
-    val tabs = listOf("Credits", "Debts")
-    val scope = rememberCoroutineScope()
+    val scrollState = rememberScrollState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(bottom = 180.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            TabRow(
-                selectedTabIndex = pagerState.currentPage,
-                containerColor = MaterialTheme.colorScheme.background,
-                contentColor = MaterialTheme.colorScheme.onBackground,
-                indicator = { tabPositions ->
-                    TabRowDefaults.SecondaryIndicator(
-                        modifier = Modifier.tabIndicatorOffset(currentTabPosition = tabPositions[pagerState.currentPage]),
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
-                    )
-                },
-                divider = {}
-            ) {
-                tabs.forEachIndexed { index, tabTitle ->
-                    Box(
-                        modifier = Modifier
-                            .padding(horizontal = 20.dp, vertical = 16.dp)
-                            .clickable(
-                                enabled = index != pagerState.currentPage,
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                            ) {
-                                scope.launch { pagerState.animateScrollToPage(index) }
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = tabTitle,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
-                }
-            }
-            HorizontalPager(
-                state = pagerState,
-            ) {
-                val (amountColor, description) = when (it) {
-                    1 -> WizzardRed to "Total Debts"
-                    else -> WizzardYellow to "Total Credits"
-                }
-                BooksViewPager(
-                    amount = "10,000",
-                    amountColor = amountColor,
-                    description = description,
-                    count = 10
-                ) {
+            BooksOverview()
+            List(
+                size = 10,
+                init = {
+                    val amountColor = if (it % 2 == 0) WizzardYellow else WizzardRed
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .wrapContentHeight()
+                            .height(IntrinsicSize.Max)
+                            .padding(horizontal = 10.dp)
                             .clip(RoundedCornerShape(3.dp))
                             .background(MaterialTheme.colorScheme.surface)
-                            .padding(10.dp)
                     ) {
-                        Row {
+                        Row(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
                             Icon(
                                 modifier = Modifier
+                                    .padding(top = 10.dp, start = 10.dp, bottom = 10.dp)
                                     .size(40.dp)
                                     .clip(CircleShape)
                                     .background(WizzardBlue.copy(0.22f))
@@ -126,7 +84,9 @@ private fun BooksTabView() {
                             )
                             Gap(size = 10.dp)
                             Column(
-                                modifier = Modifier.weight(2.5f)
+                                modifier = Modifier
+                                    .weight(2.5f)
+                                    .padding(top = 10.dp, start = 10.dp, bottom = 10.dp)
                             ) {
                                 Text(
                                     text = "February Expenses",
@@ -144,17 +104,24 @@ private fun BooksTabView() {
                                 )
                             }
                             Gap(size = 10.dp)
-                            Text(
-                                modifier = Modifier.weight(1f),
-                                text = "10,000",
-                                style = MaterialTheme.typography.bodySmall,
-                                textAlign = TextAlign.End,
-                                color = amountColor
-                            )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .background(amountColor.copy(0.04f))
+                                    .weight(1f),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "10,000",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = amountColor
+                                )
+                            }
                         }
                     }
+
                 }
-            }
+            )
         }
         Icon(
             modifier = Modifier
@@ -170,6 +137,53 @@ private fun BooksTabView() {
         )
 
     }
+}
+
+@Composable
+private fun BooksOverview() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+            .padding(top = 20.dp, bottom = 10.dp)
+            .clip(
+                RoundedCornerShape(7.dp)
+            )
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(20.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                text = "Overview",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    MaterialTheme.colorScheme.onBackground.copy(.7f)
+                )
+            )
+            Gap(size = 20.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                BalanceItem(
+                    instrument = "Credits",
+                    amount = "10,000",
+                    amountColor = WizzardYellow,
+                    horizontalAlignment = Alignment.Start,
+                )
+                BalanceItem(
+                    instrument = "Debts",
+                    amount = "10,000",
+                    amountColor = WizzardRed,
+                    horizontalAlignment = Alignment.End,
+                )
+            }
+        }
+    }
+
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
