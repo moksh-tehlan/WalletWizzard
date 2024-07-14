@@ -38,6 +38,7 @@ internal fun Project.configureKotlin() {
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions {
             jvmTarget = JavaVersion.VERSION_11.toString()
+            freeCompilerArgs += "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api"
         }
     }
 }

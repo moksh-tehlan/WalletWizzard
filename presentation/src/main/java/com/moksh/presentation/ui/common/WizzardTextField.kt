@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.TextStyle
 
 @Composable
@@ -24,11 +26,15 @@ fun WizzardTextField(
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge.copy(
         color = MaterialTheme.colorScheme.onBackground
     ),
+    testTag: String? = null,
     cursorBrush: Brush = SolidColor(MaterialTheme.colorScheme.onBackground),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
     BasicTextField(
+        modifier = Modifier.semantics {
+            if (testTag != null) this.testTag = testTag
+        },
         value = value,
         onValueChange = onValueChange,
         singleLine = true,

@@ -12,6 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.moksh.presentation.core.theme.WalletWizzardTheme
@@ -22,10 +24,14 @@ fun WizzardPrimaryButton(
     text: String,
     enabled: Boolean = true,
     isLoading: Boolean = false,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    buttonTestTag: String? = null,
+    loaderTestTag: String? = null,
 ) {
     Button(
-        modifier = modifier,
+        modifier = modifier.semantics {
+            if (buttonTestTag != null) this.testTag = buttonTestTag
+        },
         onClick = {
             if (!isLoading)
                 onClick()
@@ -42,6 +48,9 @@ fun WizzardPrimaryButton(
     ) {
         if (isLoading) {
             CircularProgressIndicator(
+                modifier = modifier.semantics {
+                    if (loaderTestTag != null) testTag = loaderTestTag
+                },
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         } else {

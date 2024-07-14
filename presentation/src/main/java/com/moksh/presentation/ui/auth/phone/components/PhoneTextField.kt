@@ -18,10 +18,13 @@ import com.moksh.presentation.ui.common.WizzardTextField
 
 @Composable
 fun PhoneTextField(
+    modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
+    testTag: String? = null,
 ) {
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -33,6 +36,7 @@ fun PhoneTextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(24.dp),
+            testTag = testTag,
             value = value, onValueChange = onValueChange,
             hint = "Enter phone number",
             keyboardOptions = KeyboardOptions(
