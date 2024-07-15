@@ -29,6 +29,10 @@ val forwardIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.forward_arrow)
 
+val backIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.back_icon)
+
 val forwardArrowIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.arrow_forward)
@@ -36,3 +40,7 @@ val forwardArrowIcon: ImageVector
 val backArrowIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.back_arrow)
+
+val editIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.edit_icon)

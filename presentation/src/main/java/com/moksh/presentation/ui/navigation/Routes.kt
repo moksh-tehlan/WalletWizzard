@@ -21,6 +21,9 @@ sealed interface HomeRoutes : Routes {
     data object HomeGraph : HomeRoutes
 
     @Serializable
+    data object EditProfileScreen : HomeRoutes
+
+    @Serializable
     data object WalletWizzardScreen : Routes
 }
 

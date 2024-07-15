@@ -14,6 +14,7 @@ import androidx.navigation.navigation
 import com.moksh.presentation.core.theme.WalletWizzardTheme
 import com.moksh.presentation.ui.auth.otp.OtpVerificationScreen
 import com.moksh.presentation.ui.auth.phone.PhoneLoginScreen
+import com.moksh.presentation.ui.edit_profile.EditProfileScreen
 import com.moksh.presentation.ui.tab.BottomTab
 
 @Composable
@@ -21,15 +22,12 @@ fun WalletWizzardGraph() {
     val navController: NavHostController = rememberNavController()
     WalletWizzardTheme {
         NavHost(
-            navController = navController, startDestination = TabRoutes.TabGraph,
+            navController = navController, startDestination = HomeRoutes.HomeGraph,
             enterTransition = { slideInHorizontally(tween(700), initialOffsetX = { it }) },
             exitTransition = { slideOutHorizontally(tween(700), targetOffsetX = { it }) },
         ) {
             authGraph(navController)
             homeGraph(navController)
-            composable<TabRoutes.TabGraph> {
-                BottomTab()
-            }
         }
     }
 }
@@ -57,10 +55,20 @@ private fun NavGraphBuilder.authGraph(navController: NavController) {
 
 private fun NavGraphBuilder.homeGraph(navController: NavController) {
     navigation<HomeRoutes.HomeGraph>(
-        startDestination = HomeRoutes.WalletWizzardScreen,
+        startDestination = TabRoutes.TabGraph,
     ) {
         composable<HomeRoutes.WalletWizzardScreen> {
 //            WalletWizzardScreen()
+        }
+        composable<HomeRoutes.EditProfileScreen> {
+            EditProfileScreen()
+        }
+        composable<TabRoutes.TabGraph> {
+            BottomTab(
+                onEditProfileClick = {
+                    navController.navigate(HomeRoutes.EditProfileScreen)
+                }
+            )
         }
     }
 }
