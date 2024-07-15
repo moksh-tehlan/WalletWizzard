@@ -1,9 +1,12 @@
 package com.moksh.presentation.ui.navigation
 
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -14,7 +17,11 @@ import androidx.navigation.navigation
 import com.moksh.presentation.core.theme.WalletWizzardTheme
 import com.moksh.presentation.ui.auth.otp.OtpVerificationScreen
 import com.moksh.presentation.ui.auth.phone.PhoneLoginScreen
+import com.moksh.presentation.ui.books_tab.BooksTab
 import com.moksh.presentation.ui.edit_profile.EditProfileScreen
+import com.moksh.presentation.ui.home_tab.HomeTab
+import com.moksh.presentation.ui.passbook_tab.PassbookTab
+import com.moksh.presentation.ui.profile_tab.ProfileTab
 import com.moksh.presentation.ui.tab.BottomTab
 
 @Composable
@@ -22,7 +29,7 @@ fun WalletWizzardGraph() {
     val navController: NavHostController = rememberNavController()
     WalletWizzardTheme {
         NavHost(
-            navController = navController, startDestination = HomeRoutes.HomeGraph,
+            navController = navController, startDestination = Graphs.HomeGraph,
             enterTransition = { slideInHorizontally(tween(700), initialOffsetX = { it }) },
             exitTransition = { slideOutHorizontally(tween(700), targetOffsetX = { it }) },
         ) {
@@ -33,7 +40,7 @@ fun WalletWizzardGraph() {
 }
 
 private fun NavGraphBuilder.authGraph(navController: NavController) {
-    navigation<AuthRoutes.AuthGraph>(
+    navigation<Graphs.AuthGraph>(
         startDestination = AuthRoutes.PhoneLoginScreen,
     ) {
         composable<AuthRoutes.PhoneLoginScreen> {
@@ -46,7 +53,7 @@ private fun NavGraphBuilder.authGraph(navController: NavController) {
         composable<AuthRoutes.OtpVerificationScreen> {
             OtpVerificationScreen(
                 onOtpVerified = {
-                    navController.navigate(TabRoutes.TabGraph)
+                    navController.navigate(Graphs.HomeGraph)
                 }
             )
         }
@@ -54,21 +61,46 @@ private fun NavGraphBuilder.authGraph(navController: NavController) {
 }
 
 private fun NavGraphBuilder.homeGraph(navController: NavController) {
-    navigation<HomeRoutes.HomeGraph>(
-        startDestination = TabRoutes.TabGraph,
+    navigation<Graphs.HomeGraph>(
+        startDestination = HomeRoutes.WalletWizzardScreen,
     ) {
-        composable<HomeRoutes.WalletWizzardScreen> {
-//            WalletWizzardScreen()
-        }
         composable<HomeRoutes.EditProfileScreen> {
             EditProfileScreen()
         }
-        composable<TabRoutes.TabGraph> {
+        composable<HomeRoutes.WalletWizzardScreen> {
             BottomTab(
                 onEditProfileClick = {
                     navController.navigate(HomeRoutes.EditProfileScreen)
                 }
             )
+        }
+    }
+}
+
+@Composable
+fun BottomNavigationGraph(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    onEditProfileClick: () -> Unit,
+) {
+    NavHost(
+        modifier = modifier,
+        navController = navController,
+        startDestination = TabRoutes.HomeTab,
+        enterTransition = { fadeIn(tween(500)) },
+        exitTransition = { fadeOut(tween(500)) }
+    ) {
+        composable<TabRoutes.HomeTab> {
+            HomeTab()
+        }
+        composable<TabRoutes.PassBookTab> {
+            PassbookTab()
+        }
+        composable<TabRoutes.BooksTab> {
+            BooksTab()
+        }
+        composable<TabRoutes.ProfileTab> {
+            ProfileTab(onEditProfileClick)
         }
     }
 }

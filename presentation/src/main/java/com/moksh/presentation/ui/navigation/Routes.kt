@@ -5,9 +5,15 @@ import kotlinx.serialization.Serializable
 
 interface Routes
 
-sealed interface AuthRoutes : Routes {
+sealed interface Graphs : Routes {
     @Serializable
-    data object AuthGraph : AuthRoutes
+    data object AuthGraph : Graphs
+
+    @Serializable
+    data object HomeGraph : Graphs
+}
+
+sealed interface AuthRoutes : Routes {
 
     @Serializable
     data object PhoneLoginScreen : AuthRoutes
@@ -17,8 +23,6 @@ sealed interface AuthRoutes : Routes {
 }
 
 sealed interface HomeRoutes : Routes {
-    @Serializable
-    data object HomeGraph : HomeRoutes
 
     @Serializable
     data object EditProfileScreen : HomeRoutes
@@ -28,9 +32,6 @@ sealed interface HomeRoutes : Routes {
 }
 
 sealed interface TabRoutes : Routes {
-
-    @Serializable
-    data object TabGraph : TabRoutes
 
     @Serializable
     data object HomeTab : TabRoutes
