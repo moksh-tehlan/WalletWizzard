@@ -16,7 +16,8 @@ import com.moksh.presentation.ui.profile_tab.ProfileTab
 @Composable
 fun BottomNavigationGraph(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    onEditProfileClick: () -> Unit,
 ) {
     NavHost(
         modifier = modifier,
@@ -35,7 +36,7 @@ fun BottomNavigationGraph(
             BooksTab()
         }
         composable<TabRoutes.ProfileTab> {
-            ProfileTab()
+            ProfileTab(onEditProfileClick)
         }
     }
 }

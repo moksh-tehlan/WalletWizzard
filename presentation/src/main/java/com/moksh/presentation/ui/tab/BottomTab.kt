@@ -24,7 +24,9 @@ import com.moksh.presentation.ui.tab.components.WizzardBottomNavigationBar
 import com.moksh.presentation.ui.tab.components.WizzardNavigationItem
 
 @Composable
-fun BottomTab() {
+fun BottomTab(
+    onEditProfileClick: () -> Unit,
+) {
     val navController = rememberNavController()
     Scaffold { innerPadding ->
         Box(
@@ -36,7 +38,8 @@ fun BottomTab() {
                 modifier = Modifier
                     .fillMaxSize()
                     .align(Alignment.TopCenter),
-                navController = navController
+                navController = navController,
+                onEditProfileClick = onEditProfileClick
             )
             BottomNavigationBar(
                 modifier = Modifier.align(Alignment.BottomCenter),
@@ -118,5 +121,9 @@ private fun BottomNavigationBar(modifier: Modifier = Modifier, navController: Na
 @Composable
 @Preview
 private fun TabPagePreview() {
-    WalletWizzardTheme { BottomTab() }
+    WalletWizzardTheme {
+        BottomTab(
+            onEditProfileClick = {}
+        )
+    }
 }
