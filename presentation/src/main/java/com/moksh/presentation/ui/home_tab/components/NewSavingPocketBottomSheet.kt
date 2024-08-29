@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.moksh.presentation.core.theme.WalletWizzardTheme
 import com.moksh.presentation.ui.common.Gap
 import com.moksh.presentation.ui.common.WizzardPrimaryButton
-import com.moksh.presentation.ui.profile_tab.components.ProfileEditTextField
+import com.moksh.presentation.ui.profile.components.ProfileEditTextField
 
 @Composable
 fun NewSavingsPocket(

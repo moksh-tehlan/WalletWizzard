@@ -1,6 +1,7 @@
 package com.moksh.presentation.ui.home_tab
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -23,16 +24,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,28 +38,31 @@ import com.moksh.presentation.core.theme.WalletWizzardTheme
 import com.moksh.presentation.core.theme.WizzardGreen
 import com.moksh.presentation.core.theme.WizzardRed
 import com.moksh.presentation.core.theme.WizzardYellow
+import com.moksh.presentation.core.theme.accountIcon
 import com.moksh.presentation.core.theme.addIcon
 import com.moksh.presentation.core.theme.forwardArrowIcon
 import com.moksh.presentation.ui.common.Gap
 import com.moksh.presentation.ui.common.GapSpace
+import com.moksh.presentation.ui.common.clickable
 import com.moksh.presentation.ui.home_tab.components.BalanceItem
-import com.moksh.presentation.ui.home_tab.components.NewSavingsPocket
 import com.moksh.presentation.ui.home_tab.components.OverviewCard
 import com.moksh.presentation.ui.home_tab.components.SavingsCard
-import kotlinx.coroutines.launch
 
 @Composable
 fun HomeTab(
-    onAddNewSavingsPocket: () -> Unit
+    onAddNewSavingsPocket: () -> Unit,
+    onProfileClick: () -> Unit,
 ) {
     HomeTabView(
-        onAddNewSavingsPocket
+        onAddNewSavingsPocket,
+        onProfileClick
     )
 }
 
 @Composable
 private fun HomeTabView(
     onAddNewSavingsPocket: () -> Unit,
+    onProfileClick: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
 
@@ -74,10 +75,22 @@ private fun HomeTabView(
             .verticalScroll(scrollState),
     ) {
         Gap(size = 30.dp)
-        Text(
-            text = "Wallet-Wizzard",
-            style = MaterialTheme.typography.titleMedium,
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Wallet-Wizzard",
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Image(
+                modifier = Modifier.clickable {
+                    onProfileClick()
+                },
+                imageVector = accountIcon, contentDescription = "account icon",
+                colorFilter = ColorFilter.tint(Color.White)
+            )
+        }
         Gap(size = 70.dp)
         Box(modifier = Modifier.fillMaxWidth()) {
             Box(
@@ -244,7 +257,8 @@ private fun HomeTabPreview() {
     WalletWizzardTheme {
         Scaffold {
             HomeTabView(
-                onAddNewSavingsPocket = {}
+                onAddNewSavingsPocket = {},
+                onProfileClick = {}
             )
         }
     }

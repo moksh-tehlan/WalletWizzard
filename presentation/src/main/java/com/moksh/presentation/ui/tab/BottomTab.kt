@@ -17,7 +17,6 @@ import com.moksh.presentation.core.theme.WalletWizzardTheme
 import com.moksh.presentation.core.theme.booksIcon
 import com.moksh.presentation.core.theme.homeIcon
 import com.moksh.presentation.core.theme.passBookIcon
-import com.moksh.presentation.core.theme.profileIcon
 import com.moksh.presentation.ui.navigation.BottomNavigationGraph
 import com.moksh.presentation.ui.navigation.TabRoutes
 import com.moksh.presentation.ui.tab.components.WizzardBottomNavigationBar
@@ -93,20 +92,6 @@ private fun BottomNavigationBar(modifier: Modifier = Modifier, navController: Na
             imageVector = booksIcon,
             onClick = {
                 navController.navigate(TabRoutes.BooksTab) {
-                    popUpTo(navController.graph.findStartDestination().id) {
-                        saveState = true
-                    }
-                    launchSingleTop = true
-                    restoreState = true
-                }
-            },
-        )
-        WizzardNavigationItem(
-            label = "PROFILE",
-            isActive = currentRoute == TabRoutes.ProfileTab.toString(),
-            imageVector = profileIcon,
-            onClick = {
-                navController.navigate(TabRoutes.ProfileTab) {
                     popUpTo(navController.graph.findStartDestination().id) {
                         saveState = true
                     }

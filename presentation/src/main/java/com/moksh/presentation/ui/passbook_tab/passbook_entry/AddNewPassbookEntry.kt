@@ -47,7 +47,7 @@ import com.moksh.presentation.ui.passbook_tab.passbook_entry.viewmodel.PassbookE
 import com.moksh.presentation.ui.passbook_tab.passbook_entry.viewmodel.PassbookEntryEvent
 import com.moksh.presentation.ui.passbook_tab.passbook_entry.viewmodel.PassbookEntryState
 import com.moksh.presentation.ui.passbook_tab.passbook_entry.viewmodel.PassbookEntryViewModel
-import com.moksh.presentation.ui.profile_tab.components.ProfileEditTextField
+import com.moksh.presentation.ui.profile.components.ProfileEditTextField
 
 @Composable
 fun AddNewPassbookEntry(
