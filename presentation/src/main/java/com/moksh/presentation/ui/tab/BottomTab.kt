@@ -25,7 +25,7 @@ import com.moksh.presentation.ui.tab.components.WizzardNavigationItem
 
 @Composable
 fun BottomTab(
-    onEditProfileClick: () -> Unit,
+    rootNavController: NavController,
 ) {
     val navController = rememberNavController()
     Scaffold { innerPadding ->
@@ -39,7 +39,7 @@ fun BottomTab(
                     .fillMaxSize()
                     .align(Alignment.TopCenter),
                 navController = navController,
-                onEditProfileClick = onEditProfileClick
+                rootNavController = rootNavController,
             )
             BottomNavigationBar(
                 modifier = Modifier.align(Alignment.BottomCenter),
@@ -122,8 +122,6 @@ private fun BottomNavigationBar(modifier: Modifier = Modifier, navController: Na
 @Preview
 private fun TabPagePreview() {
     WalletWizzardTheme {
-        BottomTab(
-            onEditProfileClick = {}
-        )
+        BottomTab(rootNavController = rememberNavController())
     }
 }

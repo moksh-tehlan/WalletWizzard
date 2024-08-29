@@ -21,7 +21,9 @@ import com.moksh.presentation.ui.books_tab.BooksTab
 import com.moksh.presentation.ui.edit_profile.EditProfileScreen
 import com.moksh.presentation.ui.home_tab.HomeTab
 import com.moksh.presentation.ui.passbook_tab.PassbookTab
+import com.moksh.presentation.ui.passbook_tab.passbook_entry.AddNewPassbookEntry
 import com.moksh.presentation.ui.profile_tab.ProfileTab
+import com.moksh.presentation.ui.savings.new_pocket.AddNewSavingsPocketScreen
 import com.moksh.presentation.ui.tab.BottomTab
 
 @Composable
@@ -67,10 +69,18 @@ private fun NavGraphBuilder.homeGraph(navController: NavController) {
         composable<HomeRoutes.EditProfileScreen> {
             EditProfileScreen()
         }
+        composable<HomeRoutes.AddNewSavingsPocketScreen> {
+            AddNewSavingsPocketScreen()
+        }
         composable<HomeRoutes.WalletWizzardScreen> {
             BottomTab(
-                onEditProfileClick = {
-                    navController.navigate(HomeRoutes.EditProfileScreen)
+                rootNavController = navController,
+            )
+        }
+        composable<HomeRoutes.AddNewPassbookEntry> {
+            AddNewPassbookEntry(
+                onTransactionSave = {
+                    navController.popBackStack()
                 }
             )
         }
@@ -81,7 +91,7 @@ private fun NavGraphBuilder.homeGraph(navController: NavController) {
 fun BottomNavigationGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    onEditProfileClick: () -> Unit,
+    rootNavController: NavController,
 ) {
     NavHost(
         modifier = modifier,
@@ -91,16 +101,26 @@ fun BottomNavigationGraph(
         exitTransition = { fadeOut(tween(500)) }
     ) {
         composable<TabRoutes.HomeTab> {
-            HomeTab()
+            HomeTab(
+                onAddNewSavingsPocket = {
+                    rootNavController.navigate(HomeRoutes.AddNewSavingsPocketScreen)
+                }
+            )
         }
         composable<TabRoutes.PassBookTab> {
-            PassbookTab()
+            PassbookTab(
+                onNewEntry = { entryType ->
+                    rootNavController.navigate(HomeRoutes.AddNewPassbookEntry(entryType = entryType.name))
+                }
+            )
         }
         composable<TabRoutes.BooksTab> {
             BooksTab()
         }
         composable<TabRoutes.ProfileTab> {
-            ProfileTab(onEditProfileClick)
+            ProfileTab(onEditProfileClick = {
+                rootNavController.navigate(HomeRoutes.EditProfileScreen)
+            })
         }
     }
 }

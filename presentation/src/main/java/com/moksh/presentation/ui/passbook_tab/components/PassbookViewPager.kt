@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,13 +27,13 @@ import androidx.compose.ui.unit.sp
 import com.moksh.presentation.ui.common.Gap
 
 @Composable
-fun PassbookViewPager(
+fun <T> PassbookViewPager(
     modifier: Modifier = Modifier,
     amount: String,
     amountColor: Color,
     description: String,
-    count: Int,
-    content: @Composable (Int) -> Unit,
+    data: List<T>,
+    content: @Composable (Int, T) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier,
@@ -81,8 +83,8 @@ fun PassbookViewPager(
                 }
             }
         }
-        items(count = count) {
-            content(it)
+        itemsIndexed(data) { count, data ->
+            content(count, data)
         }
     }
 }

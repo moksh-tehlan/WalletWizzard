@@ -3,9 +3,13 @@ package com.moksh.presentation.ui.auth.otp.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.moksh.domain.model.request.SaveUserRequest
+import com.moksh.domain.model.response.User
+import com.moksh.domain.repository.UserRepository
+import com.moksh.domain.usecases.user.SaveUser
+import com.moksh.domain.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -14,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OtpVerificationViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val saveUser: SaveUser
 ) : ViewModel() {
     private val _otpVerificationState = MutableStateFlow(OtpVerificationState())
     val otpState = _otpVerificationState.asStateFlow()
@@ -58,12 +63,23 @@ class OtpVerificationViewModel @Inject constructor(
             isLoading = true,
         )
         viewModelScope.launch {
-            delay(500)
-            eventChannel.send(OtpVerificationEvent.OtpVerified)
-            _otpVerificationState.value = _otpVerificationState.value.copy(
-                isLoading = false,
-                buttonEnabled = _otpVerificationState.value.phoneNumber.length == 4
+            val user = SaveUserRequest(
+                phoneNumber = _otpVerificationState.value.phoneNumber,
+                name = "Moksh Tehlan",
             )
+            when (val response = saveUser.invoke(user)) {
+                is Result.Success -> {
+                    eventChannel.send(OtpVerificationEvent.OtpVerified)
+                    _otpVerificationState.value = _otpVerificationState.value.copy(
+                        isLoading = false,
+                        buttonEnabled = _otpVerificationState.value.phoneNumber.length == 4
+                    )
+                }
+
+                is Result.Error -> {
+                    eventChannel.send(OtpVerificationEvent.OtpVerificationFailed)
+                }
+            }
         }
     }
 }

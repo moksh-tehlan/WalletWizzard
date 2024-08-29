@@ -51,36 +51,20 @@ import com.moksh.presentation.ui.home_tab.components.SavingsCard
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomeTab() {
-    HomeTabView()
+fun HomeTab(
+    onAddNewSavingsPocket: () -> Unit
+) {
+    HomeTabView(
+        onAddNewSavingsPocket
+    )
 }
 
 @Composable
-private fun HomeTabView() {
-    var sheetOpened by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
-    val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+private fun HomeTabView(
+    onAddNewSavingsPocket: () -> Unit,
+) {
     val scrollState = rememberScrollState()
 
-    when (sheetOpened) {
-        true -> {
-            NewSavingsPocket(sheetState = modalBottomSheetState, onDismissRequest = {
-                sheetOpened = false
-                scope.launch {
-                    modalBottomSheetState.hide()
-                }
-            },
-                pocketName = "Samsung watch ultra",
-                amount = "70,000",
-                date = "01/01/2023",
-                onDateChange = {},
-                pocketNameChange = {},
-                amountChange = {},
-                onAddNewPocket = {})
-        }
-
-        else -> {}
-    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -201,10 +185,7 @@ private fun HomeTabView() {
                             MutableInteractionSource()
                         }
                     ) {
-                        sheetOpened = true
-                        scope.launch {
-                            modalBottomSheetState.expand()
-                        }
+                        onAddNewSavingsPocket()
                     }
                     .padding(5.dp),
             ) {
@@ -260,5 +241,11 @@ private fun HomeTabView() {
 @Preview
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 private fun HomeTabPreview() {
-    WalletWizzardTheme { Scaffold { HomeTabView() } }
+    WalletWizzardTheme {
+        Scaffold {
+            HomeTabView(
+                onAddNewSavingsPocket = {}
+            )
+        }
+    }
 }

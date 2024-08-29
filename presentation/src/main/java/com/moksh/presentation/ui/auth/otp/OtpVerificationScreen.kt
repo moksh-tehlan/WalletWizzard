@@ -37,6 +37,8 @@ fun OtpVerificationScreen(
                 keyboardController?.hide()
                 onOtpVerified()
             }
+
+            OtpVerificationEvent.OtpVerificationFailed -> {}
         }
     }
     OtpVerificationScreenView(

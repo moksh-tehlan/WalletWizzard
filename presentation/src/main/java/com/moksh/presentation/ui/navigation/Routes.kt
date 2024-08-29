@@ -1,5 +1,6 @@
 package com.moksh.presentation.ui.navigation
 
+import com.moksh.presentation.ui.passbook_tab.passbook_entry.component.EntryType
 import kotlinx.serialization.Serializable
 
 
@@ -29,6 +30,12 @@ sealed interface HomeRoutes : Routes {
 
     @Serializable
     data object WalletWizzardScreen : Routes
+
+    @Serializable
+    data object AddNewSavingsPocketScreen : Routes
+
+    @Serializable
+    data class AddNewPassbookEntry(val entryType: String) : Routes
 }
 
 sealed interface TabRoutes : Routes {

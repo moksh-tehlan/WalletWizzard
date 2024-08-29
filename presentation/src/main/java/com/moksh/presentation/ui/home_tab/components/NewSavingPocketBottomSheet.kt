@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
@@ -24,6 +25,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.moksh.presentation.core.theme.WalletWizzardTheme
@@ -127,7 +129,7 @@ private fun NewSavingsPocketView(
 }
 
 @Composable
-private fun SavingsPocketTextField(
+fun SavingsPocketTextField(
     modifier: Modifier = Modifier,
     heading: String,
     value: String,
@@ -136,6 +138,7 @@ private fun SavingsPocketTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     enabled: Boolean = true,
+    singleLine: Boolean = true,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium.copy(
         color = MaterialTheme.colorScheme.onBackground
     ),
@@ -157,7 +160,7 @@ private fun SavingsPocketTextField(
             onValueChange = onValueChange,
             textStyle = textStyle,
             cursorBrush = SolidColor(Color.White),
-            singleLine = true,
+            singleLine = singleLine,
             enabled = enabled,
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
@@ -165,7 +168,7 @@ private fun SavingsPocketTextField(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(55.dp)
+                    .heightIn(min = 55.dp, max = 100.dp)
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(horizontal = 14.dp),
                 contentAlignment = Alignment.CenterStart
@@ -175,8 +178,10 @@ private fun SavingsPocketTextField(
                     Text(
                         text = hintText,
                         style = textStyle.copy(
-                            color = textStyle.color.copy(alpha = 0.1f)
-                        )
+                            color = textStyle.color.copy(alpha = 0.1f),
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Clip
                     )
                 }
             }
