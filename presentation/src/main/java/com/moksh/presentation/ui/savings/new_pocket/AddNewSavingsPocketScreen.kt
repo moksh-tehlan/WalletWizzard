@@ -6,13 +6,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -30,7 +27,7 @@ import com.moksh.presentation.ui.common.Gap
 import com.moksh.presentation.ui.common.GapSpace
 import com.moksh.presentation.ui.common.WizzardPrimaryButton
 import com.moksh.presentation.ui.home_tab.components.SavingsPocketTextField
-import com.moksh.presentation.ui.profile_tab.components.ProfileEditTextField
+import com.moksh.presentation.ui.profile.components.ProfileEditTextField
 
 @Composable
 fun AddNewSavingsPocketScreen() {

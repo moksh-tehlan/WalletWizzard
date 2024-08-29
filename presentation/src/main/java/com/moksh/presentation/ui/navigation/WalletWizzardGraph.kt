@@ -18,11 +18,10 @@ import com.moksh.presentation.core.theme.WalletWizzardTheme
 import com.moksh.presentation.ui.auth.otp.OtpVerificationScreen
 import com.moksh.presentation.ui.auth.phone.PhoneLoginScreen
 import com.moksh.presentation.ui.books_tab.BooksTab
-import com.moksh.presentation.ui.edit_profile.EditProfileScreen
 import com.moksh.presentation.ui.home_tab.HomeTab
 import com.moksh.presentation.ui.passbook_tab.PassbookTab
 import com.moksh.presentation.ui.passbook_tab.passbook_entry.AddNewPassbookEntry
-import com.moksh.presentation.ui.profile_tab.ProfileTab
+import com.moksh.presentation.ui.profile.ProfileScreen
 import com.moksh.presentation.ui.savings.new_pocket.AddNewSavingsPocketScreen
 import com.moksh.presentation.ui.tab.BottomTab
 
@@ -67,7 +66,7 @@ private fun NavGraphBuilder.homeGraph(navController: NavController) {
         startDestination = HomeRoutes.WalletWizzardScreen,
     ) {
         composable<HomeRoutes.EditProfileScreen> {
-            EditProfileScreen()
+            ProfileScreen()
         }
         composable<HomeRoutes.AddNewSavingsPocketScreen> {
             AddNewSavingsPocketScreen()
@@ -104,6 +103,9 @@ fun BottomNavigationGraph(
             HomeTab(
                 onAddNewSavingsPocket = {
                     rootNavController.navigate(HomeRoutes.AddNewSavingsPocketScreen)
+                },
+                onProfileClick = {
+                    rootNavController.navigate(HomeRoutes.EditProfileScreen)
                 }
             )
         }
@@ -117,10 +119,10 @@ fun BottomNavigationGraph(
         composable<TabRoutes.BooksTab> {
             BooksTab()
         }
-        composable<TabRoutes.ProfileTab> {
-            ProfileTab(onEditProfileClick = {
-                rootNavController.navigate(HomeRoutes.EditProfileScreen)
-            })
-        }
+//        composable<TabRoutes.ProfileTab> {
+//            ProfileTab(onEditProfileClick = {
+//                rootNavController.navigate(HomeRoutes.EditProfileScreen)
+//            })
+//        }
     }
 }

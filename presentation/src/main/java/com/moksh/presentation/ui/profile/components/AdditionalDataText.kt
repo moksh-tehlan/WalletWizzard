@@ -1,4 +1,4 @@
-package com.moksh.presentation.ui.profile_tab.components
+package com.moksh.presentation.ui.profile.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

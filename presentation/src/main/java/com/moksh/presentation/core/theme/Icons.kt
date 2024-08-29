@@ -44,3 +44,7 @@ val backArrowIcon: ImageVector
 val editIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.edit_icon)
+
+val accountIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.account_icon)
