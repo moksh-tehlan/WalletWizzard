@@ -4,8 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moksh.domain.model.request.SaveUserRequest
-import com.moksh.domain.model.response.User
-import com.moksh.domain.repository.UserRepository
+import com.moksh.domain.usecases.category.InsertDefaultCategory
+import com.moksh.domain.usecases.payment_mode.InsertDefaultPaymentMode
 import com.moksh.domain.usecases.user.SaveUser
 import com.moksh.domain.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +19,9 @@ import javax.inject.Inject
 @HiltViewModel
 class OtpVerificationViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val saveUser: SaveUser
+    private val saveUser: SaveUser,
+    private val insertPaymentModes: InsertDefaultPaymentMode,
+    private val insertDefaultCategory: InsertDefaultCategory,
 ) : ViewModel() {
     private val _otpVerificationState = MutableStateFlow(OtpVerificationState())
     val otpState = _otpVerificationState.asStateFlow()
@@ -67,8 +69,10 @@ class OtpVerificationViewModel @Inject constructor(
                 phoneNumber = _otpVerificationState.value.phoneNumber,
                 name = "Moksh Tehlan",
             )
-            when (val response = saveUser.invoke(user)) {
+            when (saveUser.invoke(user)) {
                 is Result.Success -> {
+                    insertPaymentModes.invoke()
+                    insertDefaultCategory.invoke()
                     eventChannel.send(OtpVerificationEvent.OtpVerified)
                     _otpVerificationState.value = _otpVerificationState.value.copy(
                         isLoading = false,

@@ -3,9 +3,16 @@ package com.moksh.presentation.ui.navigation
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -14,28 +21,55 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
+import com.moksh.domain.usecases.user.GetUser
+import com.moksh.domain.util.Result
 import com.moksh.presentation.core.theme.WalletWizzardTheme
+import com.moksh.presentation.core.utils.asUiText
 import com.moksh.presentation.ui.auth.otp.OtpVerificationScreen
 import com.moksh.presentation.ui.auth.phone.PhoneLoginScreen
 import com.moksh.presentation.ui.books_tab.BooksTab
+import com.moksh.presentation.ui.category.CategoryScreen
 import com.moksh.presentation.ui.home_tab.HomeTab
 import com.moksh.presentation.ui.passbook_tab.PassbookTab
-import com.moksh.presentation.ui.passbook_tab.passbook_entry.AddNewPassbookEntry
+import com.moksh.presentation.ui.passbook_entry.AddNewPassbookEntry
 import com.moksh.presentation.ui.profile.ProfileScreen
 import com.moksh.presentation.ui.savings.new_pocket.AddNewSavingsPocketScreen
 import com.moksh.presentation.ui.tab.BottomTab
+import timber.log.Timber
 
 @Composable
-fun WalletWizzardGraph() {
+fun WalletWizzardGraph(getUser: GetUser) {
+
+    var startDestination by remember { mutableStateOf<Graphs?>(null) }
+    LaunchedEffect(true) {
+        val result = getUser.invoke()
+        startDestination = when (result) {
+            is Result.Success -> {
+                Timber.d("User: ${result.data}")
+                Graphs.HomeGraph
+            }
+
+            is Result.Error -> {
+                Timber.d("Error: ${result.error.asUiText()}")
+                Graphs.AuthGraph
+            }
+        }
+    }
     val navController: NavHostController = rememberNavController()
     WalletWizzardTheme {
-        NavHost(
-            navController = navController, startDestination = Graphs.HomeGraph,
-            enterTransition = { slideInHorizontally(tween(700), initialOffsetX = { it }) },
-            exitTransition = { slideOutHorizontally(tween(700), targetOffsetX = { it }) },
-        ) {
-            authGraph(navController)
-            homeGraph(navController)
+        if (startDestination != null) {
+            NavHost(
+                navController = navController, startDestination = startDestination!!,
+//                enterTransition = { slideInHorizontally(tween(700), initialOffsetX = { it }) },
+//                exitTransition = { slideOutHorizontally(tween(700), targetOffsetX = { it }) },
+            ) {
+                authGraph(navController)
+                homeGraph(navController)
+            }
+        } else {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
         }
     }
 }
@@ -80,8 +114,14 @@ private fun NavGraphBuilder.homeGraph(navController: NavController) {
             AddNewPassbookEntry(
                 onTransactionSave = {
                     navController.popBackStack()
+                },
+                onSelectCategory = {
+                    navController.navigate(HomeRoutes.CategoryScreen(transactionType = it.name))
                 }
             )
+        }
+        composable<HomeRoutes.CategoryScreen> {
+            CategoryScreen()
         }
     }
 }
@@ -111,8 +151,8 @@ fun BottomNavigationGraph(
         }
         composable<TabRoutes.PassBookTab> {
             PassbookTab(
-                onNewEntry = { entryType ->
-                    rootNavController.navigate(HomeRoutes.AddNewPassbookEntry(entryType = entryType.name))
+                onNewEntry = { transactionType ->
+                    rootNavController.navigate(HomeRoutes.AddNewPassbookEntry(entryType = transactionType.name))
                 }
             )
         }

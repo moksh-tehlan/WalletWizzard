@@ -3,10 +3,8 @@ package com.moksh.data
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.moksh.data.database.WizzardDatabase
-import com.moksh.data.dto.CategoryDao
-import com.moksh.data.dto.ExpenseDao
-import com.moksh.data.dto.IncomeDao
-import com.moksh.data.dto.UserDao
+import com.moksh.data.dao.CategoryDao
+import com.moksh.data.dao.UserDao
 import com.moksh.data.entities.local.CategoryEntity
 import com.moksh.data.entities.local.ExpenseEntity
 import com.moksh.data.entities.local.IncomeEntity

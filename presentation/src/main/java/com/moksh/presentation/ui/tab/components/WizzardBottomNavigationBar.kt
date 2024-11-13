@@ -59,7 +59,7 @@ fun WizzardBottomNavigationBar(
                     ),
                     radius = 30.dp
                 )
-                .padding(top = 34.dp, bottom = 44.dp),
+                .padding(top = 34.dp, bottom = 20.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,

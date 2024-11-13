@@ -1,10 +1,12 @@
 package com.moksh.data.di
 
-import com.moksh.data.repository.ExpenseRepositoryImpl
-import com.moksh.data.repository.IncomeRepositoryImpl
+import com.moksh.data.repository.CategoryRepositoryImpl
+import com.moksh.data.repository.PaymentModeRepositoryImpl
+import com.moksh.data.repository.TransactionRepositoryImpl
 import com.moksh.data.repository.UserRepositoryImpl
-import com.moksh.domain.repository.ExpenseRepository
-import com.moksh.domain.repository.IncomeRepository
+import com.moksh.domain.repository.CategoryRepository
+import com.moksh.domain.repository.PaymentModeRepository
+import com.moksh.domain.repository.TransactionRepository
 import com.moksh.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -23,13 +25,20 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindIncomeRepositoryImpl(
-        incomeRepository: IncomeRepositoryImpl
-    ): IncomeRepository
+    abstract fun bindTransactionRepositoryImpl(
+        transactionRepositoryImpl: TransactionRepositoryImpl
+    ): TransactionRepository
 
     @Binds
     @Singleton
-    abstract fun bindExpenseRepositoryImpl(
-        expenseRepositoryImpl: ExpenseRepositoryImpl
-    ): ExpenseRepository
+    abstract fun bindPaymentModeRepositoryImpl(
+        paymentRepositoryImpl: PaymentModeRepositoryImpl
+    ): PaymentModeRepository
+
+
+    @Binds
+    @Singleton
+    abstract fun bindCategoryRepositoryImpl(
+        categoryRepositoryImpl: CategoryRepositoryImpl
+    ): CategoryRepository
 }

@@ -5,31 +5,33 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.moksh.data.dto.CategoryDao
-import com.moksh.data.dto.ExpenseDao
-import com.moksh.data.dto.IncomeDao
-import com.moksh.data.dto.UserDao
+import com.moksh.data.dao.CategoryDao
+import com.moksh.data.dao.PaymentModeDao
+import com.moksh.data.dao.TransactionDao
+import com.moksh.data.dao.UserDao
 import com.moksh.data.entities.local.CategoryEntity
-import com.moksh.data.entities.local.ExpenseEntity
-import com.moksh.data.entities.local.IncomeEntity
+import com.moksh.data.entities.local.PaymentModeEntity
+import com.moksh.data.entities.local.TransactionEntity
 import com.moksh.data.entities.local.UserEntity
 import com.moksh.data.entities.utils.Converters
+import timber.log.Timber
+import java.util.concurrent.Executors
 
 
 @Database(
     entities = [
-        IncomeEntity::class,
-        ExpenseEntity::class,
+        TransactionEntity::class,
         UserEntity::class,
-        CategoryEntity::class
-    ], version = 5
+        CategoryEntity::class,
+        PaymentModeEntity::class,
+    ], version = 7
 )
 @TypeConverters(Converters::class)
 abstract class WizzardDatabase : RoomDatabase() {
-    abstract fun incomeDao(): IncomeDao
-    abstract fun expenseDao(): ExpenseDao
     abstract fun userDao(): UserDao
+    abstract fun transactionDao(): TransactionDao
     abstract fun categoryDao(): CategoryDao
+    abstract fun paymentModeDao(): PaymentModeDao
 
     companion object {
         private const val DATABASE_NAME = "wizzard_database.db"
@@ -43,6 +45,13 @@ abstract class WizzardDatabase : RoomDatabase() {
                     name = dbFile.absolutePath
                 )
                 .fallbackToDestructiveMigration()
+                .setJournalMode(JournalMode.TRUNCATE)
+                .apply {
+                    setQueryCallback({ sqlQuery, bindArgs ->
+                        Timber.tag("RoomDatabase")
+                            .d("%s%s", "SQL Query: $sqlQuery SQL Args: ", bindArgs)
+                    }, Executors.newSingleThreadExecutor())
+                }
                 .build()
             return builder
         }

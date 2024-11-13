@@ -1,37 +1,67 @@
 package com.moksh.data.datasource
 
-import com.moksh.data.dto.CategoryDao
+import com.moksh.data.dao.CategoryDao
 import com.moksh.data.entities.local.CategoryEntity
+import com.moksh.data.entities.utils.safeDbCall
+import com.moksh.domain.model.response.TransactionType
 import com.moksh.domain.util.DataError
-import com.moksh.domain.util.EmptyResult
 import com.moksh.domain.util.Result
-import com.moksh.domain.util.asEmptyDataResult
 import kotlinx.coroutines.flow.Flow
-import timber.log.Timber
+import java.util.Date
 
 class CategoryDataSource(private val categoryDao: CategoryDao) {
-    suspend fun insertCategory(category: CategoryEntity): Result<Long, DataError> {
-        return try {
-            Result.Success(categoryDao.insertCategory(category))
-        } catch (e: Exception) {
-            Timber.d("ErrorCategory: ${e.message}")
-            Result.Error(DataError.Local.UNKNOWN)
-        }
+
+    fun getAllCategories(): Result<Flow<List<CategoryEntity>>, DataError.Local> = safeDbCall {
+        categoryDao.getAllCategories()
     }
 
-    fun getAllCategory(): Result<Flow<List<CategoryEntity>>, DataError> {
-        return try {
-            Result.Success(categoryDao.getAllCategories())
-        } catch (e: Exception) {
-            Result.Error(DataError.Local.UNKNOWN)
+    fun getCategoriesByType(type: TransactionType): Result<Flow<List<CategoryEntity>>, DataError.Local> =
+        safeDbCall {
+            val categoryList = categoryDao.getCategoriesByType(type)
+            categoryList
         }
+
+    suspend fun insertCategory(category: CategoryEntity): Result<String, DataError.Local> =
+        safeDbCall {
+            categoryDao.insertCategory(category)
+            category.id
+        }
+
+    suspend fun getCategoryById(id: String): Result<CategoryEntity, DataError.Local> = safeDbCall {
+        categoryDao.getCategoryById(id)
     }
 
-    suspend fun getCategoryById(id: Long): Result<CategoryEntity, DataError> {
-        return try {
-            Result.Success(categoryDao.getCategoryById(id))
-        } catch (e: Exception) {
-            Result.Error(DataError.Local.UNKNOWN)
+    suspend fun updateCategory(category: CategoryEntity): Result<Unit, DataError.Local> =
+        safeDbCall {
+            categoryDao.updateCategory(category)
         }
+
+    suspend fun deleteCategory(category: CategoryEntity): Result<Unit, DataError.Local> =
+        safeDbCall {
+            categoryDao.deleteCategory(category)
+        }
+
+    fun searchCategories(query: String,type: TransactionType): Result<Flow<List<CategoryEntity>>, DataError.Local> =
+        safeDbCall {
+            categoryDao.searchCategories(query,type)
+        }
+
+    suspend fun getCategoryCount(): Result<Int, DataError.Local> = safeDbCall {
+        categoryDao.getCategoryCount()
     }
+
+    suspend fun getUnsyncedCategories(): Result<List<CategoryEntity>, DataError.Local> =
+        safeDbCall {
+            categoryDao.getUnsyncedCategories()
+        }
+
+    suspend fun markCategoriesAsSynced(ids: List<String>): Result<Unit, DataError.Local> =
+        safeDbCall {
+            categoryDao.markCategoriesAsSynced(ids)
+        }
+
+    suspend fun getCategoriesUpdatedAfter(lastSyncTime: Date): Result<List<CategoryEntity>, DataError.Local> =
+        safeDbCall {
+            categoryDao.getCategoriesUpdatedAfter(lastSyncTime)
+        }
 }

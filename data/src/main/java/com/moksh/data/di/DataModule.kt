@@ -1,15 +1,15 @@
 package com.moksh.data.di
 
 import android.content.Context
+import com.moksh.data.dao.CategoryDao
+import com.moksh.data.dao.PaymentModeDao
+import com.moksh.data.dao.TransactionDao
+import com.moksh.data.dao.UserDao
 import com.moksh.data.database.WizzardDatabase
 import com.moksh.data.datasource.CategoryDataSource
-import com.moksh.data.datasource.ExpensesDataSource
-import com.moksh.data.datasource.IncomeDataSource
+import com.moksh.data.datasource.PaymentModeDataSource
+import com.moksh.data.datasource.TransactionDataSource
 import com.moksh.data.datasource.UserDataSource
-import com.moksh.data.dto.CategoryDao
-import com.moksh.data.dto.ExpenseDao
-import com.moksh.data.dto.IncomeDao
-import com.moksh.data.dto.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,8 +36,8 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun providesIncomeDataSource(incomeDao: IncomeDao): IncomeDataSource {
-        return IncomeDataSource(incomeDao)
+    fun providesIncomeDataSource(transactionDao: TransactionDao): TransactionDataSource {
+        return TransactionDataSource(transactionDao)
     }
 
     @Provides
@@ -48,8 +48,9 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun providesExpenseDataSource(expenseDao: ExpenseDao): ExpensesDataSource {
-        return ExpensesDataSource(expenseDao)
+    fun providesPaymentModeDataSource(paymentModeDao: PaymentModeDao): PaymentModeDataSource {
+        return PaymentModeDataSource(paymentModeDao)
     }
+
 
 }

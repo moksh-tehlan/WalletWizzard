@@ -9,7 +9,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -42,10 +41,14 @@ class PassbookViewModel @Inject constructor(
 
     private fun getExpenseList() {
         viewModelScope.launch {
-            getExpenses.invoke().collectLatest { expenseList ->
-                _passbookState.update {
-                    it.copy(expenseList = expenseList)
+            when (val result = getExpenses.invoke()) {
+                is Result.Success -> {
+                    result.data.collectLatest {
+                        _passbookState.value = _passbookState.value.copy(expenseList = it)
+                    }
                 }
+
+                is Result.Error -> {}
             }
         }
     }

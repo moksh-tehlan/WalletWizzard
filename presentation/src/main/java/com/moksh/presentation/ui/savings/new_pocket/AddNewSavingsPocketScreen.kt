@@ -26,7 +26,7 @@ import com.moksh.presentation.core.theme.backArrowIcon
 import com.moksh.presentation.ui.common.Gap
 import com.moksh.presentation.ui.common.GapSpace
 import com.moksh.presentation.ui.common.WizzardPrimaryButton
-import com.moksh.presentation.ui.home_tab.components.SavingsPocketTextField
+import com.moksh.presentation.ui.common.WizzardTextField
 import com.moksh.presentation.ui.profile.components.ProfileEditTextField
 
 @Composable
@@ -65,13 +65,13 @@ private fun AddNewSavingsPocketScreenView() {
                 .padding(15.dp)
                 .padding(innerPadding)
         ) {
-            SavingsPocketTextField(
+            WizzardTextField(
                 heading = "POCKET NAME",
                 value = "Samsung watch ultra",
                 onValueChange = { },
             )
             Gap(size = 15.dp)
-            SavingsPocketTextField(
+            WizzardTextField(
                 heading = "AMOUNT",
                 value = "10,000",
                 keyboardOptions = KeyboardOptions(

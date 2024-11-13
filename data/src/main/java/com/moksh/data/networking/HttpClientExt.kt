@@ -2,6 +2,7 @@ package com.moksh.data.networking
 
 import com.moksh.domain.util.DataError
 import com.moksh.domain.util.Result
+import java.nio.channels.UnresolvedAddressException
 import kotlin.coroutines.cancellation.CancellationException
 
 /*suspend inline fun <reified T> safeCall(execute: () -> HttpResponse): Result<T, DataError.Network> {
@@ -35,11 +36,11 @@ suspend inline fun <reified T> responseToResult(response: HttpResponse): Result<
 }*/
 
 fun constructRoute(route: String): String {
-//    return when {
-//        route.contains(BuildConfig.BASE_URL) -> route
-//        route.startsWith("/") -> BuildConfig.BASE_URL + route
-//        else -> BuildConfig.BASE_URL + "/$route"
-//    }
+    /*return when {
+        route.contains(BuildConfig.BASE_URL) -> route
+        route.startsWith("/") -> BuildConfig.BASE_URL + route
+        else -> BuildConfig.BASE_URL + "/$route"
+    }*/
     return ""
 }
 

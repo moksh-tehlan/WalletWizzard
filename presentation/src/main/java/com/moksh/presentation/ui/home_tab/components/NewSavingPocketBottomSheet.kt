@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.moksh.presentation.core.theme.WalletWizzardTheme
 import com.moksh.presentation.ui.common.Gap
 import com.moksh.presentation.ui.common.WizzardPrimaryButton
+import com.moksh.presentation.ui.common.WizzardTextField
 import com.moksh.presentation.ui.profile.components.ProfileEditTextField
 
 @Composable
@@ -88,13 +89,13 @@ private fun NewSavingsPocketView(
             .padding(start = 20.dp, end = 20.dp, top = 20.dp)
             .verticalScroll(scrollState)
     ) {
-        SavingsPocketTextField(
+        WizzardTextField(
             heading = "POCKET NAME",
             value = pocketName,
             onValueChange = pocketNameChange,
         )
         Gap(size = 15.dp)
-        SavingsPocketTextField(
+        WizzardTextField(
             heading = "AMOUNT",
             value = amount,
             keyboardOptions = KeyboardOptions(
@@ -128,67 +129,6 @@ private fun NewSavingsPocketView(
     }
 }
 
-@Composable
-fun SavingsPocketTextField(
-    modifier: Modifier = Modifier,
-    heading: String,
-    value: String,
-    onValueChange: (String) -> Unit,
-    hintText: String = "",
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardActions: KeyboardActions = KeyboardActions.Default,
-    enabled: Boolean = true,
-    singleLine: Boolean = true,
-    textStyle: TextStyle = MaterialTheme.typography.bodyMedium.copy(
-        color = MaterialTheme.colorScheme.onBackground
-    ),
-) {
-    Column(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Text(
-            text = heading,
-            style = MaterialTheme.typography.bodyMedium.copy(
-                color = MaterialTheme.colorScheme.onBackground.copy(.7f)
-            )
-        )
-        Gap(size = 6.dp)
-        BasicTextField(
-            modifier = Modifier
-                .fillMaxWidth(),
-            value = value,
-            onValueChange = onValueChange,
-            textStyle = textStyle,
-            cursorBrush = SolidColor(Color.White),
-            singleLine = singleLine,
-            enabled = enabled,
-            keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 55.dp, max = 100.dp)
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(horizontal = 14.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                it.invoke()
-                if (value.isEmpty()) {
-                    Text(
-                        text = hintText,
-                        style = textStyle.copy(
-                            color = textStyle.color.copy(alpha = 0.1f),
-                        ),
-                        maxLines = 1,
-                        overflow = TextOverflow.Clip
-                    )
-                }
-            }
-        }
-    }
-
-}
 
 @Composable
 @Preview

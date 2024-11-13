@@ -1,10 +1,10 @@
 package com.moksh.data.di
 
 import com.moksh.data.database.WizzardDatabase
-import com.moksh.data.dto.CategoryDao
-import com.moksh.data.dto.ExpenseDao
-import com.moksh.data.dto.IncomeDao
-import com.moksh.data.dto.UserDao
+import com.moksh.data.dao.CategoryDao
+import com.moksh.data.dao.PaymentModeDao
+import com.moksh.data.dao.TransactionDao
+import com.moksh.data.dao.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,8 +23,8 @@ object DaoModule {
 
     @Singleton
     @Provides
-    fun provideIncomeDao(wizzardDatabase: WizzardDatabase): IncomeDao {
-        return wizzardDatabase.incomeDao()
+    fun provideIncomeDao(wizzardDatabase: WizzardDatabase): TransactionDao {
+        return wizzardDatabase.transactionDao()
     }
 
     @Singleton
@@ -35,7 +35,8 @@ object DaoModule {
 
     @Singleton
     @Provides
-    fun provideExpenseDao(wizzardDatabase: WizzardDatabase): ExpenseDao {
-        return wizzardDatabase.expenseDao()
+    fun providePaymentModeDao(wizzardDatabase: WizzardDatabase): PaymentModeDao {
+        return wizzardDatabase.paymentModeDao()
     }
+
 }
