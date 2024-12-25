@@ -19,7 +19,8 @@ sealed interface AuthRoutes : Routes {
     data object PhoneLoginScreen : AuthRoutes
 
     @Serializable
-    data class OtpVerificationScreen(val phoneNumber: String) : AuthRoutes
+    data class OtpVerificationScreen(val phoneNumber: String, val verificationId: String) :
+        AuthRoutes
 }
 
 sealed interface HomeRoutes : Routes {

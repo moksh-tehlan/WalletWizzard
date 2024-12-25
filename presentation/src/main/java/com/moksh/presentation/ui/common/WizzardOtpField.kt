@@ -46,9 +46,9 @@ fun WizzardOtpField(
 ) {
     val focusManager = LocalFocusManager.current
     val text = remember {
-        Array(4) { mutableStateOf("") }
+        Array(6) { mutableStateOf("") }
     }
-    val refs = remember { List(4) { FocusRequester() } }
+    val refs = remember { List(6) { FocusRequester() } }
     LaunchedEffect(key1 = Unit) {
         refs[0].requestFocus()
     }
@@ -57,7 +57,7 @@ fun WizzardOtpField(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ) {
-        repeat(4) { index ->
+        repeat(6) { index ->
             var isFocused by remember { mutableStateOf(false) }
             BasicTextField(
                 modifier = Modifier
@@ -87,7 +87,7 @@ fun WizzardOtpField(
                         } else if (it.isEmpty()) {
                             focusManager.moveFocus(FocusDirection.Previous)
                         } else if (it.length == 2) {
-                            if (index + 1 < 4) {
+                            if (index + 1 < 6) {
                                 text[index + 1].value = it.last().toString()
                             }
                             focusManager.moveFocus(FocusDirection.Next)

@@ -1,18 +1,26 @@
 package com.moksh.presentation.ui.auth.phone.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.moksh.domain.usecases.auth.SendOtp
+import com.moksh.domain.util.Result
+import com.moksh.presentation.core.utils.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class PhoneLoginViewModel @Inject constructor() : ViewModel() {
+class PhoneLoginViewModel @Inject constructor(
+    private val sendOtp: SendOtp,
+    @ApplicationContext private val context: Context
+) : ViewModel() {
 
     private val _phoneLoginState = MutableStateFlow(PhoneLoginState())
     val phoneLoginState = _phoneLoginState.asStateFlow()
@@ -50,12 +58,24 @@ class PhoneLoginViewModel @Inject constructor() : ViewModel() {
             isLoading = true,
         )
         viewModelScope.launch {
-            delay(500)
-            eventChannel.send(PhoneLoginEvent.OnOtpSent(phoneNumber = _phoneLoginState.value.phoneNumber))
-            _phoneLoginState.value = _phoneLoginState.value.copy(
-                isLoading = false,
-                buttonEnabled = _phoneLoginState.value.phoneNumber.length == 10
-            )
+            when (val response = sendOtp.invoke("+91"+_phoneLoginState.value.phoneNumber)) {
+                is Result.Success -> {
+                    eventChannel.send(
+                        PhoneLoginEvent.OnOtpSent(
+                            phoneNumber = _phoneLoginState.value.phoneNumber,
+                            verificationId = response.data
+                        )
+                    )
+                    _phoneLoginState.value = _phoneLoginState.value.copy(
+                        isLoading = false,
+                        buttonEnabled = true
+                    )
+                }
+
+                is Result.Error -> {
+                    Timber.d(response.error.asUiText().asString(context))
+                }
+            }
         }
     }
 }

@@ -29,14 +29,14 @@ import com.moksh.presentation.ui.common.WizzardPrimaryButton
 @Composable
 fun PhoneLoginScreen(
     viewModel: PhoneLoginViewModel = hiltViewModel(),
-    onOtpSent: (String) -> Unit,
+    onOtpSent: (String,String) -> Unit,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     ObserveAsEvents(flow = viewModel.events) { event ->
         when (event) {
             is PhoneLoginEvent.OnOtpSent -> {
                 keyboardController?.hide()
-                onOtpSent(event.phoneNumber)
+                onOtpSent(event.phoneNumber,event.verificationId)
             }
         }
     }

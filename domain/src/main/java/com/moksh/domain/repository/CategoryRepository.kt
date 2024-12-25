@@ -9,28 +9,28 @@ import kotlinx.coroutines.flow.Flow
 import java.util.Date
 
 interface CategoryRepository {
-    suspend fun insertCategory(category: SaveCategoryRequest): Result<String, DataError.Local>
+    suspend fun insertCategory(category: SaveCategoryRequest): Result<String, DataError>
 
-    fun getAllCategories(): Result<Flow<List<Category>>, DataError.Local>
+    fun getAllCategories(): Result<Flow<List<Category>>, DataError>
 
-    fun getCategoriesByType(type: TransactionType): Result<Flow<List<Category>>, DataError.Local>
+    fun getCategoriesByType(type: TransactionType): Result<Flow<List<Category>>, DataError>
 
-    suspend fun getCategoryById(id: String): Result<Category, DataError.Local>
+    suspend fun getCategoryById(id: String): Result<Category, DataError>
 
-    suspend fun updateCategory(category: Category): Result<Unit, DataError.Local>
+    suspend fun updateCategory(category: Category): Result<Unit, DataError>
 
-    suspend fun deleteCategory(category: Category): Result<Unit, DataError.Local>
+    suspend fun deleteCategory(category: Category): Result<Unit, DataError>
 
-    suspend fun deleteCategoryById(id: String): Result<Unit, DataError.Local>
+    suspend fun deleteCategoryById(id: String): Result<Unit, DataError>
 
-    fun searchCategories(query: String,type: TransactionType): Result<Flow<List<Category>>, DataError.Local>
+    fun searchCategories(query: String,type: TransactionType): Result<Flow<List<Category>>, DataError>
 
-    suspend fun getCategoryCount(): Result<Int, DataError.Local>
+    suspend fun getCategoryCount(): Result<Int, DataError>
 
-    suspend fun getUnsyncedCategories(): Result<List<Category>, DataError.Local>
+    suspend fun getUnsyncedCategories(): Result<List<Category>, DataError>
 
-    suspend fun markCategoriesAsSynced(ids: List<String>): Result<Unit, DataError.Local>
+    suspend fun markCategoriesAsSynced(ids: List<String>): Result<Unit, DataError>
 
-    suspend fun getCategoriesUpdatedAfter(lastSyncTime: Date): Result<List<Category>, DataError.Local>
-    suspend fun insertDefaultCategories(): Result<Unit, DataError.Local>
+    suspend fun getCategoriesUpdatedAfter(lastSyncTime: Date): Result<List<Category>, DataError>
+    suspend fun insertDefaultCategories(): Result<Unit, DataError>
 }

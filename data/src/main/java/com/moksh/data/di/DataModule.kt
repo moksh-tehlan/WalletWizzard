@@ -1,11 +1,14 @@
 package com.moksh.data.di
 
+import android.app.Activity
 import android.content.Context
+import com.google.firebase.auth.FirebaseAuth
 import com.moksh.data.dao.CategoryDao
 import com.moksh.data.dao.PaymentModeDao
 import com.moksh.data.dao.TransactionDao
 import com.moksh.data.dao.UserDao
 import com.moksh.data.database.WizzardDatabase
+import com.moksh.data.datasource.AuthDataSource
 import com.moksh.data.datasource.CategoryDataSource
 import com.moksh.data.datasource.PaymentModeDataSource
 import com.moksh.data.datasource.TransactionDataSource
@@ -26,6 +29,12 @@ object DataModule {
         @ApplicationContext context: Context
     ): WizzardDatabase {
         return WizzardDatabase.getRoomDatabase(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
     }
 
     @Provides
@@ -52,5 +61,14 @@ object DataModule {
         return PaymentModeDataSource(paymentModeDao)
     }
 
+    @Provides
+    @Singleton
+    fun providesAuthDataSource(
+        firebaseAuth: FirebaseAuth,
+        userDataSource: UserDataSource,
+        activity: Activity,
+    ): AuthDataSource {
+        return AuthDataSource(firebaseAuth, userDataSource, activity)
+    }
 
 }

@@ -8,11 +8,11 @@ import com.moksh.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface PaymentModeRepository {
-    suspend fun insertPaymentMode(paymentMode: SavePaymentModeRequest): Result<String, DataError.Local>
-    fun getAllPaymentModes(): Result<Flow<List<PaymentMode>>, DataError.Local>
-    suspend fun getPaymentModeById(id: String): Result<PaymentMode?, DataError.Local>
-    suspend fun updatePaymentMode(paymentMode: PaymentMode): Result<Unit, DataError.Local>
-    suspend fun deletePaymentMode(paymentMode: PaymentMode): Result<Unit, DataError.Local>
-    suspend fun searchPaymentModes(query: String): Result<List<PaymentMode>, DataError.Local>
-    suspend fun insertDefaultPaymentModes(): Result<Unit, DataError.Local>
+    suspend fun insertPaymentMode(paymentMode: SavePaymentModeRequest): Result<String, DataError>
+    fun getAllPaymentModes(): Result<Flow<List<PaymentMode>>, DataError>
+    suspend fun getPaymentModeById(id: String): Result<PaymentMode?, DataError>
+    suspend fun updatePaymentMode(paymentMode: PaymentMode): Result<Unit, DataError>
+    suspend fun deletePaymentMode(paymentMode: PaymentMode): Result<Unit, DataError>
+    suspend fun searchPaymentModes(query: String): Result<List<PaymentMode>, DataError>
+    suspend fun insertDefaultPaymentModes(): Result<Unit, DataError>
 }

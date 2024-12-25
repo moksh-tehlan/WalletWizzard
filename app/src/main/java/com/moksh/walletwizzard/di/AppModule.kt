@@ -1,10 +1,12 @@
 package com.moksh.walletwizzard.di
 
+import android.app.Activity
 import android.app.Application
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.moksh.walletwizzard.MainApplication
+import com.moksh.walletwizzard.utils.ActivityRetainer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,5 +34,15 @@ object AppModule {
     @Singleton
     fun provideCoroutineScope(app: Application): CoroutineScope {
         return (app as MainApplication).applicationScope
+    }
+
+    @Provides
+    @Singleton
+    fun provideActivityRetainer() = ActivityRetainer()
+
+    @Provides
+    @Singleton
+    fun provideActivity(activityRetainer : ActivityRetainer):Activity{
+        return activityRetainer.getActivity() ?: throw IllegalStateException("Activity is null")
     }
 }

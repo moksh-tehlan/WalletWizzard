@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.moksh.android.hilt)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.com.google.devtools.ksp)
+    alias(libs.plugins.moksh.android.firebase)
 }
 
 android {

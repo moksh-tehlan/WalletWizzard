@@ -4,5 +4,6 @@ data class OtpVerificationState(
     val isLoading: Boolean = false,
     val buttonEnabled: Boolean = false,
     val phoneNumber: String = "",
+    val verificationId:String = "",
     val otp: String = ""
 )

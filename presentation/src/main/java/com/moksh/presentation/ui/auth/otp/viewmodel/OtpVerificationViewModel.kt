@@ -4,9 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moksh.domain.model.request.SaveUserRequest
+import com.moksh.domain.usecases.auth.VerifyOtp
 import com.moksh.domain.usecases.category.InsertDefaultCategory
 import com.moksh.domain.usecases.payment_mode.InsertDefaultPaymentMode
-import com.moksh.domain.usecases.user.SaveUser
 import com.moksh.domain.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -14,12 +14,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class OtpVerificationViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val saveUser: SaveUser,
+    private val verifyOtp: VerifyOtp,
     private val insertPaymentModes: InsertDefaultPaymentMode,
     private val insertDefaultCategory: InsertDefaultCategory,
 ) : ViewModel() {
@@ -31,8 +32,11 @@ class OtpVerificationViewModel @Inject constructor(
 
     init {
         _otpVerificationState.value = _otpVerificationState.value.copy(
-            phoneNumber = savedStateHandle["phoneNumber"] ?: ""
-        )
+            phoneNumber = savedStateHandle["phoneNumber"] ?: "",
+            verificationId = savedStateHandle["verificationId"] ?: ""
+        ).also {
+            Timber.d("verificationId: ${it.verificationId}")
+        }
     }
 
     fun onAction(otpVerificationAction: OtpVerificationAction) {
@@ -43,12 +47,12 @@ class OtpVerificationViewModel @Inject constructor(
     }
 
     private fun changeOtp(otp: String) {
-        if (otp.length <= 4) {
+        if (otp.length <= 6) {
             _otpVerificationState.value = _otpVerificationState.value.copy(
                 otp = otp
             )
             if (_otpVerificationState.value.isLoading) return
-            if (otp.length == 4) {
+            if (otp.length == 6) {
                 _otpVerificationState.value = _otpVerificationState.value.copy(
                     buttonEnabled = true
                 )
@@ -65,18 +69,18 @@ class OtpVerificationViewModel @Inject constructor(
             isLoading = true,
         )
         viewModelScope.launch {
-            val user = SaveUserRequest(
+            when (verifyOtp.invoke(
                 phoneNumber = _otpVerificationState.value.phoneNumber,
-                name = "Moksh Tehlan",
-            )
-            when (saveUser.invoke(user)) {
+                verificationId = _otpVerificationState.value.verificationId,
+                code = _otpVerificationState.value.otp,
+            )) {
                 is Result.Success -> {
                     insertPaymentModes.invoke()
                     insertDefaultCategory.invoke()
                     eventChannel.send(OtpVerificationEvent.OtpVerified)
                     _otpVerificationState.value = _otpVerificationState.value.copy(
                         isLoading = false,
-                        buttonEnabled = _otpVerificationState.value.phoneNumber.length == 4
+                        buttonEnabled = true
                     )
                 }
 

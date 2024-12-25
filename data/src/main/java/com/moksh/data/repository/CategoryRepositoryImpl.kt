@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 class CategoryRepositoryImpl @Inject constructor(private val dataSource: CategoryDataSource) :
     CategoryRepository {
-    override fun getAllCategories(): Result<Flow<List<Category>>, DataError.Local> {
+    override fun getAllCategories(): Result<Flow<List<Category>>, DataError> {
         return dataSource.getAllCategories().map { flow ->
             flow.map { categoryList ->
                 categoryList.map { categoryEntity ->
@@ -28,7 +28,7 @@ class CategoryRepositoryImpl @Inject constructor(private val dataSource: Categor
         }
     }
 
-    override fun getCategoriesByType(type: TransactionType): Result<Flow<List<Category>>, DataError.Local> {
+    override fun getCategoriesByType(type: TransactionType): Result<Flow<List<Category>>, DataError> {
         return dataSource.getCategoriesByType(type).map { flow ->
             flow.map { categoryList ->
                 categoryList.map { categoryEntity ->
@@ -38,19 +38,19 @@ class CategoryRepositoryImpl @Inject constructor(private val dataSource: Categor
         }
     }
 
-    override suspend fun insertCategory(category: SaveCategoryRequest): Result<String, DataError.Local> =
+    override suspend fun insertCategory(category: SaveCategoryRequest): Result<String, DataError> =
         dataSource.insertCategory(category.toEntity())
 
-    override suspend fun getCategoryById(id: String): Result<Category, DataError.Local> =
+    override suspend fun getCategoryById(id: String): Result<Category, DataError> =
         dataSource.getCategoryById(id).map { it.toDto() }
 
-    override suspend fun updateCategory(category: Category): Result<Unit, DataError.Local> =
+    override suspend fun updateCategory(category: Category): Result<Unit, DataError> =
         dataSource.updateCategory(category.toEntity())
 
-    override suspend fun deleteCategory(category: Category): Result<Unit, DataError.Local> =
+    override suspend fun deleteCategory(category: Category): Result<Unit, DataError> =
         dataSource.deleteCategory(category.toEntity())
 
-    override suspend fun deleteCategoryById(id: String): Result<Unit, DataError.Local> =
+    override suspend fun deleteCategoryById(id: String): Result<Unit, DataError> =
         dataSource.deleteCategory(
             CategoryEntity(
                 id = id,
@@ -61,8 +61,11 @@ class CategoryRepositoryImpl @Inject constructor(private val dataSource: Categor
             )
         )
 
-    override fun searchCategories(query: String,type: TransactionType): Result<Flow<List<Category>>, DataError.Local> =
-        dataSource.searchCategories(query,type).map { flow ->
+    override fun searchCategories(
+        query: String,
+        type: TransactionType
+    ): Result<Flow<List<Category>>, DataError> =
+        dataSource.searchCategories(query, type).map { flow ->
             flow.map { categoryList ->
                 categoryList.map { categoryEntity ->
                     categoryEntity.toDto()
@@ -70,27 +73,27 @@ class CategoryRepositoryImpl @Inject constructor(private val dataSource: Categor
             }
         }
 
-    override suspend fun getCategoryCount(): Result<Int, DataError.Local> =
+    override suspend fun getCategoryCount(): Result<Int, DataError> =
         dataSource.getCategoryCount()
 
-    override suspend fun getUnsyncedCategories(): Result<List<Category>, DataError.Local> =
+    override suspend fun getUnsyncedCategories(): Result<List<Category>, DataError> =
         dataSource.getUnsyncedCategories().map { categoryList ->
             categoryList.map { categoryEntity ->
                 categoryEntity.toDto()
             }
         }
 
-    override suspend fun markCategoriesAsSynced(ids: List<String>): Result<Unit, DataError.Local> =
+    override suspend fun markCategoriesAsSynced(ids: List<String>): Result<Unit, DataError> =
         dataSource.markCategoriesAsSynced(ids)
 
-    override suspend fun getCategoriesUpdatedAfter(lastSyncTime: Date): Result<List<Category>, DataError.Local> =
+    override suspend fun getCategoriesUpdatedAfter(lastSyncTime: Date): Result<List<Category>, DataError> =
         dataSource.getCategoriesUpdatedAfter(lastSyncTime).map { categoryList ->
             categoryList.map { categoryEntity ->
                 categoryEntity.toDto()
             }
         }
 
-    override suspend fun insertDefaultCategories(): Result<Unit, DataError.Local> {
+    override suspend fun insertDefaultCategories(): Result<Unit, DataError> {
         val categoriesList = listOf(
             CategoryEntity(name = "Income", type = TransactionType.Income),
             CategoryEntity(name = "Freelance", type = TransactionType.Income),

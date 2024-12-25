@@ -53,7 +53,7 @@ class PassbookEntryViewModel @Inject constructor(
             launch {
                 when (val result = paymentModes.invoke()) {
                     is Result.Error -> {
-                        Timber.e("Failed to fetch payment modes error : ${result.error.name}")
+                        Timber.e("Failed to fetch payment modes error : ${result.error.asUiText()}")
                         // Handle error appropriately
                     }
 

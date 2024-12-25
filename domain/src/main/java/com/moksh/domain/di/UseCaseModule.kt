@@ -1,9 +1,12 @@
 package com.moksh.domain.di
 
+import com.moksh.domain.repository.AuthRepository
 import com.moksh.domain.repository.CategoryRepository
 import com.moksh.domain.repository.PaymentModeRepository
 import com.moksh.domain.repository.TransactionRepository
 import com.moksh.domain.repository.UserRepository
+import com.moksh.domain.usecases.auth.SendOtp
+import com.moksh.domain.usecases.auth.VerifyOtp
 import com.moksh.domain.usecases.category.GetCategories
 import com.moksh.domain.usecases.category.InsertDefaultCategory
 import com.moksh.domain.usecases.expense.GetExpenses
@@ -85,4 +88,15 @@ object UseCaseModule {
     @Singleton
     fun provideGetExpensesCategories(categoryRepository: CategoryRepository) =
         GetCategories(categoryRepository = categoryRepository)
+
+    @Provides
+    @Singleton
+    fun provideSendOtpUseCase(authRepository: AuthRepository) =
+        SendOtp(authRepository = authRepository)
+
+    @Provides
+    @Singleton
+    fun provideVerifyOtpUseCase(authRepository: AuthRepository) =
+        VerifyOtp(authRepository = authRepository)
+
 }

@@ -18,11 +18,11 @@ class PaymentModeRepositoryImpl @Inject constructor(
     private val dataSource: PaymentModeDataSource
 ) : PaymentModeRepository {
 
-    override suspend fun insertPaymentMode(paymentMode: SavePaymentModeRequest): Result<String, DataError.Local> {
+    override suspend fun insertPaymentMode(paymentMode: SavePaymentModeRequest): Result<String, DataError> {
         return dataSource.insertPaymentMode(paymentMode.toEntity())
     }
 
-    override fun getAllPaymentModes(): Result<Flow<List<PaymentMode>>, DataError.Local> {
+    override fun getAllPaymentModes(): Result<Flow<List<PaymentMode>>, DataError> {
         return dataSource.getAllPaymentModes()
             .map { flow ->
                 flow.map { list -> list.map { it.toDto() } }
@@ -30,23 +30,23 @@ class PaymentModeRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun getPaymentModeById(id: String): Result<PaymentMode?, DataError.Local> {
+    override suspend fun getPaymentModeById(id: String): Result<PaymentMode?, DataError> {
         return dataSource.getPaymentModeById(id).map { it.toDto() }
     }
 
-    override suspend fun updatePaymentMode(paymentMode: PaymentMode): Result<Unit, DataError.Local> {
+    override suspend fun updatePaymentMode(paymentMode: PaymentMode): Result<Unit, DataError> {
         return dataSource.updatePaymentMode(paymentMode.toEntity())
     }
 
-    override suspend fun deletePaymentMode(paymentMode: PaymentMode): Result<Unit, DataError.Local> {
+    override suspend fun deletePaymentMode(paymentMode: PaymentMode): Result<Unit, DataError> {
         return dataSource.deletePaymentMode(paymentMode.toEntity())
     }
 
-    override suspend fun searchPaymentModes(query: String): Result<List<PaymentMode>, DataError.Local> {
+    override suspend fun searchPaymentModes(query: String): Result<List<PaymentMode>, DataError> {
         return dataSource.searchPaymentModes(query).map { list -> list.map { it.toDto() } }
     }
 
-    override suspend fun insertDefaultPaymentModes(): Result<Unit, DataError.Local> {
+    override suspend fun insertDefaultPaymentModes(): Result<Unit, DataError> {
         val defaultPaymentModes = listOf(
             PaymentModeEntity(name = "Cash"),
             PaymentModeEntity(name = "Credit Card"),

@@ -81,8 +81,13 @@ private fun NavGraphBuilder.authGraph(navController: NavController) {
     ) {
         composable<AuthRoutes.PhoneLoginScreen> {
             PhoneLoginScreen(
-                onOtpSent = { phoneNumber ->
-                    navController.navigate(AuthRoutes.OtpVerificationScreen(phoneNumber = phoneNumber))
+                onOtpSent = { phoneNumber, verificationId ->
+                    navController.navigate(
+                        AuthRoutes.OtpVerificationScreen(
+                            phoneNumber = phoneNumber,
+                            verificationId = verificationId
+                        )
+                    )
                 }
             )
         }
@@ -124,7 +129,7 @@ private fun NavGraphBuilder.homeGraph(navController: NavController) {
                         )
                     )
                 },
-                onPaymentModeChange = {paymentModeId->
+                onPaymentModeChange = { paymentModeId ->
                     navController.navigate(
                         HomeRoutes.PaymentModeScreen(
                             paymentModeId = paymentModeId

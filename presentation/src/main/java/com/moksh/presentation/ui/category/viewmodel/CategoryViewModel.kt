@@ -86,7 +86,7 @@ class CategoryViewModel @Inject constructor(
                 }
 
                 is Result.Error -> {
-                    Timber.d(result.error.name)
+                    Timber.d(result.error.asUiText().asString(context))
                 }
             }
             _categoryState.update {
@@ -159,7 +159,7 @@ class CategoryViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = getCategories.invoke(query = query, type = type)) {
                 is Result.Error -> {
-                    Timber.d(result.error.name)
+                    Timber.d(result.error.asUiText().asString(context))
                 }
 
                 is Result.Success -> {
