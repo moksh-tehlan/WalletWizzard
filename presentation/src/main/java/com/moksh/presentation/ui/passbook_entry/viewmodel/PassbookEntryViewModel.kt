@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.moksh.domain.model.response.Category
 import com.moksh.domain.model.response.PaymentMode
 import com.moksh.domain.model.response.SaveTransaction
 import com.moksh.domain.model.response.TransactionType
@@ -12,7 +11,6 @@ import com.moksh.domain.usecases.category.GetCategories
 import com.moksh.domain.usecases.expense.SaveExpense
 import com.moksh.domain.usecases.income.SaveIncome
 import com.moksh.domain.usecases.payment_mode.GetPaymentModes
-import com.moksh.domain.util.DataError
 import com.moksh.domain.util.Result
 import com.moksh.presentation.core.utils.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,11 +26,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PassbookEntryViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
     private val saveIncome: SaveIncome,
     private val saveExpense: SaveExpense,
     private val paymentModes: GetPaymentModes,
     private val getCategories: GetCategories,
+    private val getPayment:GetPaymentModes,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -78,6 +77,18 @@ class PassbookEntryViewModel @Inject constructor(
             is PassbookEntryAction.PaymentModeChanged -> paymentModeChanged(action.paymentMode)
             is PassbookEntryAction.RemarkChanged -> remarkChanged(action.remark)
             is PassbookEntryAction.SaveTransaction -> saveTransaction()
+            is PassbookEntryAction.UpdateSelectedCategoryAndPaymentMode -> updateSelectedCategoryAndPaymentMode(action.categoryId,action.paymentId)
+            is PassbookEntryAction.OnPaymentModeChange -> onPaymentModeChange()
+        }
+    }
+
+    private fun onPaymentModeChange() {
+        viewModelScope.launch {
+            _passbookEvent.emit(
+                PassbookEntryEvent.OnPaymentModeChange(
+                    paymentModeId = _passbookEntryState.value.paymentMode?.id
+                )
+            )
         }
     }
 
@@ -85,7 +96,8 @@ class PassbookEntryViewModel @Inject constructor(
         viewModelScope.launch {
             _passbookEvent.emit(
                 PassbookEntryEvent.OnCategoryChange(
-                    transactionType = _passbookEntryState.value.entryType
+                    transactionType = _passbookEntryState.value.entryType,
+                    categoryId = _passbookEntryState.value.category?.id
                 )
             )
         }
@@ -97,9 +109,40 @@ class PassbookEntryViewModel @Inject constructor(
         }
     }
 
-    private fun categoryChanged(category: Category) {
-        _passbookEntryState.update {
-            it.copy(category = category)
+    private fun updateSelectedCategoryAndPaymentMode(categoryId:String?,paymentModeId:String?) {
+        viewModelScope.launch {
+            launch {
+                if (categoryId.isNullOrEmpty())return@launch
+                when (val result = getCategories.invoke(categoryId)) {
+                    is Result.Success -> {
+                        _passbookEntryState.update {
+                            it.copy(
+                                category = result.data
+                            )
+                        }
+                    }
+
+                    is Result.Error -> {
+                        Timber.d("Error: ${result.error.asUiText().asString(context)}")
+                    }
+                }
+            }
+            launch {
+                if (paymentModeId.isNullOrEmpty())return@launch
+                when (val result = getPayment.invoke(paymentModeId)) {
+                    is Result.Success -> {
+                        _passbookEntryState.update {
+                            it.copy(
+                                paymentMode = result.data
+                            )
+                        }
+                    }
+
+                    is Result.Error -> {
+                        Timber.d("Error: ${result.error.asUiText().asString(context)}")
+                    }
+                }
+            }
         }
     }
 

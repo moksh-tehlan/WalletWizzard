@@ -12,6 +12,7 @@ import com.moksh.domain.usecases.income.GetIncome
 import com.moksh.domain.usecases.income.SaveIncome
 import com.moksh.domain.usecases.payment_mode.GetPaymentModes
 import com.moksh.domain.usecases.payment_mode.InsertDefaultPaymentMode
+import com.moksh.domain.usecases.payment_mode.SavePaymentMode
 import com.moksh.domain.usecases.user.GetUser
 import com.moksh.domain.usecases.user.SaveUser
 import com.moksh.domain.usecases.user.UpdateUser
@@ -68,6 +69,11 @@ object UseCaseModule {
     @Singleton
     fun provideGetPaymentModesUseCase(paymentModeRepository: PaymentModeRepository) =
         GetPaymentModes(paymentModeRepository = paymentModeRepository)
+
+    @Provides
+    @Singleton
+    fun provideSavePaymentModeUseCase(paymentModeRepository: PaymentModeRepository) =
+        SavePaymentMode(paymentModeRepository = paymentModeRepository)
 
     @Provides
     @Singleton

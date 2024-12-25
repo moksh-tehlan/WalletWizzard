@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.moksh.android.application.compose)
     alias(libs.plugins.moksh.android.hilt)
+    alias(libs.plugins.moksh.android.firebase)
 }
 
 android {
@@ -27,5 +28,5 @@ dependencies {
     implementation(projects.presentation)
     implementation(projects.data)
     implementation(projects.domain)
-    testImplementation("junit:junit:4.12")
+    testImplementation(libs.junit)
 }

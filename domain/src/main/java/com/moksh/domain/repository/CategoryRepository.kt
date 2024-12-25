@@ -1,5 +1,6 @@
 package com.moksh.domain.repository
 
+import com.moksh.domain.model.request.SaveCategoryRequest
 import com.moksh.domain.model.response.Category
 import com.moksh.domain.model.response.TransactionType
 import com.moksh.domain.util.DataError
@@ -8,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import java.util.Date
 
 interface CategoryRepository {
-    suspend fun insertCategory(category: Category): Result<String, DataError.Local>
+    suspend fun insertCategory(category: SaveCategoryRequest): Result<String, DataError.Local>
 
     fun getAllCategories(): Result<Flow<List<Category>>, DataError.Local>
 

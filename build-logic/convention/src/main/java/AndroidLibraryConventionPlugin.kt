@@ -1,8 +1,9 @@
 import com.android.build.api.dsl.LibraryExtension
-import com.plcoding.convention.ExtensionType
-import com.plcoding.convention.configureBuildTypes
-import com.plcoding.convention.configureKotlinAndroid
-import com.plcoding.convention.libs
+import com.moksh.convention.ExtensionType
+import com.moksh.convention.configureBuildTypes
+import com.moksh.convention.configureKotlinAndroid
+import com.moksh.convention.configureProductFlavors
+import com.moksh.convention.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -18,6 +19,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
                 configureBuildTypes(this, ExtensionType.LIBRARY)
+                configureProductFlavors(this, ExtensionType.LIBRARY)
 
                 defaultConfig {
                     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

@@ -4,6 +4,7 @@ import com.moksh.data.datasource.CategoryDataSource
 import com.moksh.data.entities.local.CategoryEntity
 import com.moksh.data.mappers.toDto
 import com.moksh.data.mappers.toEntity
+import com.moksh.domain.model.request.SaveCategoryRequest
 import com.moksh.domain.model.response.Category
 import com.moksh.domain.model.response.TransactionType
 import com.moksh.domain.repository.CategoryRepository
@@ -37,7 +38,7 @@ class CategoryRepositoryImpl @Inject constructor(private val dataSource: Categor
         }
     }
 
-    override suspend fun insertCategory(category: Category): Result<String, DataError.Local> =
+    override suspend fun insertCategory(category: SaveCategoryRequest): Result<String, DataError.Local> =
         dataSource.insertCategory(category.toEntity())
 
     override suspend fun getCategoryById(id: String): Result<Category, DataError.Local> =

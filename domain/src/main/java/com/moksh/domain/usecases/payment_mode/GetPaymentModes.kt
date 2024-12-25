@@ -4,5 +4,7 @@ import com.moksh.domain.repository.PaymentModeRepository
 import javax.inject.Inject
 
 class GetPaymentModes @Inject constructor(private val paymentModeRepository: PaymentModeRepository) {
-    suspend operator fun invoke() = paymentModeRepository.getAllPaymentModes()
+    operator fun invoke() = paymentModeRepository.getAllPaymentModes()
+    suspend fun invoke(paymentModeId: String) =
+        paymentModeRepository.getPaymentModeById(paymentModeId)
 }

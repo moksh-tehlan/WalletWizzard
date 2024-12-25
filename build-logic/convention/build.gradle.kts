@@ -43,5 +43,10 @@ gradlePlugin {
             id = "moksh.ktor"
             implementationClass = "KtorConventionPlugin"
         }
+
+        register("androidFirebase"){
+            id = "moksh.android.firebase"
+            implementationClass = "AndroidFirebaseConventionPlugin"
+        }
     }
 }

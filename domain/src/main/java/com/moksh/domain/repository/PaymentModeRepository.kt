@@ -1,12 +1,14 @@
 package com.moksh.domain.repository
 
+import com.moksh.domain.model.request.SavePaymentModeRequest
 import com.moksh.domain.model.response.PaymentMode
+import com.moksh.domain.usecases.payment_mode.SavePaymentMode
 import com.moksh.domain.util.DataError
 import com.moksh.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface PaymentModeRepository {
-    suspend fun insertPaymentMode(paymentMode: PaymentMode): Result<String, DataError.Local>
+    suspend fun insertPaymentMode(paymentMode: SavePaymentModeRequest): Result<String, DataError.Local>
     fun getAllPaymentModes(): Result<Flow<List<PaymentMode>>, DataError.Local>
     suspend fun getPaymentModeById(id: String): Result<PaymentMode?, DataError.Local>
     suspend fun updatePaymentMode(paymentMode: PaymentMode): Result<Unit, DataError.Local>

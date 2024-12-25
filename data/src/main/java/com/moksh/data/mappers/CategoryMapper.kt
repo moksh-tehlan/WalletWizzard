@@ -1,6 +1,7 @@
 package com.moksh.data.mappers
 
 import com.moksh.data.entities.local.CategoryEntity
+import com.moksh.domain.model.request.SaveCategoryRequest
 import com.moksh.domain.model.response.Category
 
 object CategoryMapper {
@@ -23,7 +24,15 @@ object CategoryMapper {
         createdAt = dto.createdAt,
         updatedAt = dto.updatedAt
     )
+
+    fun toEntity(dto: SaveCategoryRequest) = CategoryEntity(
+        name = dto.name,
+        icon = dto.icon,
+        color = dto.color,
+        type = dto.type,
+    )
 }
 
 fun CategoryEntity.toDto() = CategoryMapper.toDto(this)
 fun Category.toEntity() = CategoryMapper.toEntity(this)
+fun SaveCategoryRequest.toEntity() = CategoryMapper.toEntity(this)

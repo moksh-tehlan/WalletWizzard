@@ -6,4 +6,5 @@ import javax.inject.Inject
 
 class GetCategories @Inject constructor(private val categoryRepository: CategoryRepository) {
     fun invoke(type: TransactionType, query : String? = "") = categoryRepository.getCategoriesByType(type)
+    suspend fun invoke(id:String) = categoryRepository.getCategoryById(id)
 }

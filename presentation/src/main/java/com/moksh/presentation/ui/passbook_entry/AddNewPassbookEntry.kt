@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,7 +56,10 @@ import com.moksh.presentation.ui.passbook_entry.viewmodel.PassbookEntryViewModel
 fun AddNewPassbookEntry(
     viewModel: PassbookEntryViewModel = hiltViewModel(),
     onTransactionSave: () -> Unit,
-    onSelectCategory: (TransactionType) -> Unit,
+    onSelectCategory: (transactionType: TransactionType, categoryId: String?) -> Unit,
+    onPaymentModeChange: (paymentModeId: String?) -> Unit,
+    selectedCategoryId: String? = null,
+    selectedPaymentModeId: String? = null,
 ) {
     val context = LocalContext.current
     ObserveAsEvents(flow = viewModel.passbookEvent) {
@@ -64,8 +68,22 @@ fun AddNewPassbookEntry(
                 Toast.makeText(context, "Transaction Saved", Toast.LENGTH_SHORT).show()
                 onTransactionSave()
             }
-            is PassbookEntryEvent.OnCategoryChange -> onSelectCategory(it.transactionType)
+
+            is PassbookEntryEvent.OnCategoryChange -> onSelectCategory(
+                it.transactionType,
+                it.categoryId
+            )
+
+            is PassbookEntryEvent.OnPaymentModeChange -> onPaymentModeChange(it.paymentModeId)
         }
+    }
+    LaunchedEffect(selectedCategoryId) {
+        viewModel.onAction(
+            PassbookEntryAction.UpdateSelectedCategoryAndPaymentMode(
+                categoryId = selectedCategoryId,
+                paymentId = selectedPaymentModeId
+            )
+        )
     }
     AddNewPassbookEntryView(
         state = viewModel.passbookEntryState.collectAsState().value,
@@ -135,17 +153,20 @@ private fun AddNewPassbookEntryView(
             WizzardTextField(
                 onClick = { onAction(PassbookEntryAction.OnCategoryChange) },
                 heading = "Category",
-                value = state.category?.name ?: "Category",
+                value = state.category?.name ?: "",
                 hint = "Category",
                 enabled = false,
                 onValueChange = { },
             )
             Gap(size = 15.dp)
-            PaymentMethodSelector(
-                paymentModes = state.paymentModeList,
-                selectedMode = state.paymentMode, onChangePaymentMode = {
-                    onAction(PassbookEntryAction.PaymentModeChanged(it))
-                })
+            WizzardTextField(
+                onClick = { onAction(PassbookEntryAction.OnPaymentModeChange) },
+                heading = "PaymentMode",
+                value = state.paymentMode?.name ?: "",
+                hint = "Payment Mode",
+                enabled = false,
+                onValueChange = { },
+            )
             Gap(size = 40.dp)
             Gap(gapSpace = GapSpace.MAX)
             WizzardPrimaryButton(

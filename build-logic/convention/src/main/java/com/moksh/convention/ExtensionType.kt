@@ -1,4 +1,4 @@
-package com.plcoding.convention
+package com.moksh.convention
 
 enum class ExtensionType {
     APPLICATION,

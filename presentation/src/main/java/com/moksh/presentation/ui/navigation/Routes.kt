@@ -37,7 +37,10 @@ sealed interface HomeRoutes : Routes {
     data class AddNewPassbookEntry(val entryType: String) : Routes
 
     @Serializable
-    data class CategoryScreen(val transactionType: String) : Routes
+    data class CategoryScreen(val transactionType: String, val categoryId: String? = null) : Routes
+
+    @Serializable
+    data class PaymentModeScreen(val paymentModeId: String? = null) : Routes
 }
 
 sealed interface TabRoutes : Routes {

@@ -30,8 +30,9 @@ import com.moksh.presentation.ui.auth.phone.PhoneLoginScreen
 import com.moksh.presentation.ui.books_tab.BooksTab
 import com.moksh.presentation.ui.category.CategoryScreen
 import com.moksh.presentation.ui.home_tab.HomeTab
-import com.moksh.presentation.ui.passbook_tab.PassbookTab
 import com.moksh.presentation.ui.passbook_entry.AddNewPassbookEntry
+import com.moksh.presentation.ui.passbook_tab.PassbookTab
+import com.moksh.presentation.ui.payment_mode.PaymentModeScreen
 import com.moksh.presentation.ui.profile.ProfileScreen
 import com.moksh.presentation.ui.savings.new_pocket.AddNewSavingsPocketScreen
 import com.moksh.presentation.ui.tab.BottomTab
@@ -110,18 +111,57 @@ private fun NavGraphBuilder.homeGraph(navController: NavController) {
                 rootNavController = navController,
             )
         }
-        composable<HomeRoutes.AddNewPassbookEntry> {
+        composable<HomeRoutes.AddNewPassbookEntry> { backstackEntry ->
             AddNewPassbookEntry(
                 onTransactionSave = {
                     navController.popBackStack()
                 },
-                onSelectCategory = {
-                    navController.navigate(HomeRoutes.CategoryScreen(transactionType = it.name))
-                }
+                onSelectCategory = { transactionType, category ->
+                    navController.navigate(
+                        HomeRoutes.CategoryScreen(
+                            transactionType = transactionType.name,
+                            categoryId = category
+                        )
+                    )
+                },
+                onPaymentModeChange = {paymentModeId->
+                    navController.navigate(
+                        HomeRoutes.PaymentModeScreen(
+                            paymentModeId = paymentModeId
+                        )
+                    )
+                },
+                selectedCategoryId = backstackEntry.savedStateHandle.get<String>("categoryId"),
+                selectedPaymentModeId = backstackEntry.savedStateHandle.get<String>("paymentModeId"),
             )
         }
         composable<HomeRoutes.CategoryScreen> {
-            CategoryScreen()
+            CategoryScreen(
+                onBackPress = {
+                    navController.popBackStack()
+                },
+                onCategorySaved = { category ->
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        "categoryId",
+                        category?.id
+                    )
+                    navController.popBackStack()
+                }
+            )
+        }
+        composable<HomeRoutes.PaymentModeScreen> {
+            PaymentModeScreen(
+                onBackPress = {
+                    navController.popBackStack()
+                },
+                onPaymentModeSaved = { paymentMode ->
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        "paymentModeId",
+                        paymentMode?.id
+                    )
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }
