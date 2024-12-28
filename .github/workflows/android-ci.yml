@@ -27,7 +27,7 @@ jobs:
 
       - name: Create .production file
         run: |
-          echo "BASE_URL=${{ secrets.BASE_URL }}" > .env/.production
+          echo 'BASE_URL="${{ secrets.BASE_URL }}"' > .env/.production
           echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> .env/.production
           echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> .env/.production
           echo "STORE_PASSWORD=${{ secrets.STORE_PASSWORD }}" >> .env/.production
