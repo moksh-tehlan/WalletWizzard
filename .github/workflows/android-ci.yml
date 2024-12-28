@@ -93,6 +93,34 @@ jobs:
           name: app-release
           path: app/build/outputs/apk/production/release/app-production-release.apk
 
+      - name: Notify Slack about build
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "New Android Build Available! 📱",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*New Android Build Available! 📱*\n\n• Branch: ${{ github.ref_name }}\n• Commit: ${{ github.event.head_commit.message }}\n• Build Number: ${{ github.run_number }}\n• Built by: ${{ github.actor }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Upload APK to Slack
+        uses: adrey/slack-file-upload-action@master
+        with:
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          path: app/build/outputs/apk/production/release/app-production-release.apk
+          filename: android-build-${{ github.run_number }}.apk
+          initial_comment: "Here's the APK file for build #${{ github.run_number }} 📱"
+          channels: android-builds
+
       - name: Display structure of build files
         run: ls -R app/build/outputs/apk/production/release/
 
