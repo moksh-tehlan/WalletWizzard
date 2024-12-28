@@ -41,15 +41,26 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          STORE_FILE: ${{secrets.STORE_FILE}}
           ENABLE_LOGGING: ${{ secrets.ENABLE_LOGGING }}
         run: |
+          mkdir -p .env
           if [ "${{ github.ref }}" = "refs/heads/master" ]; then
+            ENV_FILE=".production"
             echo "Creating production environment file"
-            cp .env/.production .env
           else
+            ENV_FILE=".development"
             echo "Creating development environment file"
-            cp .env/.development .env
           fi
+          cat << EOF > .env/$ENV_FILE
+          BASE_URL=$BASE_URL
+          KEY_ALIAS=$KEY_ALIAS
+          KEY_PASSWORD=$KEY_PASSWORD
+          STORE_PASSWORD=$STORE_PASSWORD
+          STORE_FILE=$STORE_FILE
+          ENABLE_LOGGING=$ENABLE_LOGGING
+          EOF
+          echo "Created $ENV_FILE environment file"
 
       - name: Decode Keystore
         run: |
