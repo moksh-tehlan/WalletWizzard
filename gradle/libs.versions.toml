@@ -1,120 +1,179 @@
+# Project Configuration
 [versions]
-agp = "8.4.2"
-firebaseBom = "33.7.0"
-googleServices = "4.4.2"
-hiltAndroid = "2.51.1"
-hiltNavigationCompose = "1.2.0"
-junitJunit = "4.12"
-kotlin = "2.0.0"
-kotlinxSerializationJsonJvm = "1.6.3"
-ktor = "2.3.8"
-coreKtx = "1.13.1"
-junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.5.1"
-lifecycleRuntimeKtx = "2.8.4"
-activityCompose = "1.9.1"
-composeBom = "2024.06.00"
-appcompat = "1.7.0"
-material = "1.12.0"
-androidTools = "31.5.1"
-ksp = "2.0.0-1.0.23"
-mockitoKotlinVersion = "5.4.0"
-navigationCompose = "2.8.0-beta06"
-room = "2.6.1"
-timber = "5.0.1"
-securityCryptoKtx = "1.1.0-alpha06"
-truth = "1.4.3"
-uiTestJunit4Android = "1.7.0-beta06"
-junitKtx = "1.2.1"
-
-#Project
 projectApplicationId = "com.moksh.walletwizzard"
 projectMinSdkVersion = "24"
 projectCompileSdkVersion = "34"
 projectTargetSdkVersion = "34"
 projectVersionCode = "1"
 projectVersionName = "1.0"
-composeCompiler = "1.5.10"
 
+# Build Tool Versions
+agp = "8.4.2"
+androidTools = "31.5.1"
+composeCompiler = "1.5.10"
+kotlin = "2.0.0"
+ksp = "2.0.0-1.0.23"
+googleServices = "4.4.2"
+
+# Framework & Library Versions
+## AndroidX Core
+coreKtx = "1.13.1"
+appcompat = "1.7.0"
+material = "1.12.0"
+
+## Compose
+activityCompose = "1.9.1"
+composeBom = "2024.06.00"
+
+## Navigation
+navigationCompose = "2.8.5"
+hiltNavigationCompose = "1.2.0"
+
+## Lifecycle
+lifecycleRuntimeKtx = "2.8.4"
+
+## Room
+room = "2.6.1"
+
+## Firebase
+firebaseBom = "33.7.0"
+
+## Dependency Injection
+hiltAndroid = "2.51.1"
+
+## Networking
+ktor = "2.3.8"
+kotlinxSerializationJsonJvm = "1.6.3"
+
+## Utilities
+timber = "5.0.1"
+securityCryptoKtx = "1.1.0-alpha06"
+
+## Testing
+junit = "4.13.2"
+junitJunit = "4.12"
+junitVersion = "1.2.1"
+junitKtx = "1.2.1"
+espressoCore = "3.6.1"
+mockitoKotlinVersion = "5.4.0"
+truth = "1.4.3"
+uiTestJunit4Android = "1.7.6"
+androidxTestRunner = "1.6.2"
+androidxTestRules = "1.6.1"
+coroutinesTest = "1.7.1"
+archCore = "2.2.0"
+mockk = "1.13.8"
+
+# Library Dependencies
 [libraries]
+## AndroidX Core
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
-androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
-androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
-androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
-firebase-auth = { module = "com.google.firebase:firebase-auth" }
-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+## Compose
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-kotlin-mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlinVersion" }
+
+## Navigation
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+
+## Lifecycle
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+
+## Room
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
+
+## Firebase
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-auth = { module = "com.google.firebase:firebase-auth" }
+
+## Dependency Injection
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
+
+## Utilities
 kotlinx-serialization-json-jvm = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm", version.ref = "kotlinxSerializationJsonJvm" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 androidx-security-crypto-ktx = { module = "androidx.security:security-crypto-ktx", version.ref = "securityCryptoKtx" }
-androidx-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android", version.ref = "uiTestJunit4Android" }
-truth = { module = "com.google.truth:truth", version.ref = "truth" }
-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "uiTestJunit4Android" }
 
-# Gradle
+## Testing
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+truth = { module = "com.google.truth:truth", version.ref = "truth" }
+androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android", version.ref = "uiTestJunit4Android" }
+ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "uiTestJunit4Android" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
+androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidxTestRules" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+androidx-arch-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "archCore" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
+
+# Unit Testing
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockitoKotlinVersion" }
+mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlinVersion" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+
+## Gradle Plugins
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 
-#Ktor
-ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
-ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
-ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
-ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
-ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
-ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
-
-#Room
-androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
-androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
-
+# Plugins
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+com-google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
+com-google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+
+# Custom Plugins
 moksh-android-application = { id = "moksh.android.application", version = "unspecified" }
 moksh-android-application-compose = { id = "moksh.android.application.compose", version = "unspecified" }
-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 moksh-android-library = { id = "moksh.android.library", version = "unspecified" }
 moksh-android-library-compose = { id = "moksh.android.library.compose", version = "unspecified" }
 moksh-android-hilt = { id = "moksh.android.hilt", version = "unspecified" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 moksh-ktor = { id = "moksh.ktor", version = "unspecified" }
-com-google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
-com-google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-google-services = {id = "com.google.gms.google-services", version.ref = "googleServices"}
-moksh-android-firebase = {id = "moksh.android.firebase",version = "unspecified"}
+moksh-android-firebase = { id = "moksh.android.firebase", version = "unspecified" }
 
-
+# Dependency Bundles
 [bundles]
-ktor = [
-    "ktor-client-auth",
-    "ktor-client-cio",
-    "ktor-client-content-negotiation",
-    "ktor-client-core",
-    "ktor-client-logging",
-    "ktor-serialization-kotlinx-json"
+testing = [
+    "junit",
+    "mockito-core",
+    "mockito-kotlin",
+    "mockk",
+    "kotlinx-coroutines-test",
+    "truth"
+]
+
+androidTesting = [
+    "androidx-junit",
+    "androidx-junit-ktx",
+    "androidx-test-runner",
+    "androidx-test-rules",
+    "androidx-arch-core-testing",
+    "androidx-room-testing",
+    "mockk-android",
+    "kotlinx-coroutines-test",
+    "truth"
 ]

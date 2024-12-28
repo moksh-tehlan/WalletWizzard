@@ -21,18 +21,20 @@ internal fun Project.configureBuildTypes(
 
         signingConfigs {
             create("production") {
-                val props = EnvConfigUtil.loadProperties(project, "production")
-                storeFile = file(props.getProperty("STORE_FILE"))
-                storePassword = props.getProperty("STORE_PASSWORD")
-                keyAlias = props.getProperty("KEY_ALIAS")
-                keyPassword = props.getProperty("KEY_PASSWORD")
+                EnvConfigUtil.loadProperties(project, "production")?.let { props ->
+                    storeFile = props.getProperty("STORE_FILE")?.let { file(it) }
+                    storePassword = props.getProperty("STORE_PASSWORD")
+                    keyAlias = props.getProperty("KEY_ALIAS")
+                    keyPassword = props.getProperty("KEY_PASSWORD")
+                }
             }
-            create("development"){
-                val props = EnvConfigUtil.loadProperties(project, "development")
-                storeFile = file(props.getProperty("STORE_FILE"))
-                storePassword = props.getProperty("STORE_PASSWORD")
-                keyAlias = props.getProperty("KEY_ALIAS")
-                keyPassword = props.getProperty("KEY_PASSWORD")
+            create("development") {
+                EnvConfigUtil.loadProperties(project, "development")?.let { props ->
+                    storeFile = props.getProperty("STORE_FILE")?.let { file(it) }
+                    storePassword = props.getProperty("STORE_PASSWORD")
+                    keyAlias = props.getProperty("KEY_ALIAS")
+                    keyPassword = props.getProperty("KEY_PASSWORD")
+                }
             }
         }
 
@@ -46,6 +48,7 @@ internal fun Project.configureBuildTypes(
                         }
                         release {
                             isShrinkResources  = true
+                            isMinifyEnabled = true
                             signingConfig = signingConfigs.getByName("production")
                             configureReleaseBuildType(commonExtension)
                         }
@@ -75,7 +78,6 @@ private fun BuildType.configureDebugBuildType() {
 private fun BuildType.configureReleaseBuildType(
     commonExtension: CommonExtension<*, *, *, *, *, *>,
 ) {
-    isMinifyEnabled = true
     proguardFiles(
         commonExtension.getDefaultProguardFile("proguard-android-optimize.txt"),
         "proguard-rules.pro"

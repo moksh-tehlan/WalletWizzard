@@ -1,8 +1,11 @@
 package com.moksh.presentation.ui.navigation
 
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -61,8 +64,42 @@ fun WalletWizzardGraph(getUser: GetUser) {
         if (startDestination != null) {
             NavHost(
                 navController = navController, startDestination = startDestination!!,
-//                enterTransition = { slideInHorizontally(tween(700), initialOffsetX = { it }) },
-//                exitTransition = { slideOutHorizontally(tween(700), targetOffsetX = { it }) },
+                enterTransition = {
+                    slideInHorizontally(
+                        animationSpec = tween(
+                            durationMillis = 500,
+                            easing = FastOutSlowInEasing
+                        ),
+                        initialOffsetX = { fullWidth -> fullWidth }
+                    )
+                },
+                exitTransition = {
+                    slideOutHorizontally(
+                        animationSpec = tween(
+                            durationMillis = 500,
+                            easing = FastOutSlowInEasing
+                        ),
+                        targetOffsetX = { fullWidth -> -fullWidth }
+                    ) + fadeOut(animationSpec = tween(500))
+                },
+                popEnterTransition = {
+                    slideInHorizontally(
+                        animationSpec = tween(
+                            durationMillis = 500,
+                            easing = FastOutSlowInEasing
+                        ),
+                        initialOffsetX = { fullWidth -> -fullWidth }
+                    ) + fadeIn(animationSpec = tween(500))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        animationSpec = tween(
+                            durationMillis = 500,
+                            easing = FastOutSlowInEasing
+                        ),
+                        targetOffsetX = { fullWidth -> fullWidth }
+                    )
+                }
             ) {
                 authGraph(navController)
                 homeGraph(navController)

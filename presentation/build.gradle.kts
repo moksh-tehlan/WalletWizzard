@@ -21,7 +21,7 @@ dependencies {
     testImplementation(libs.junit)
 
 //    testImplementation(libs.junit)
-    debugImplementation(libs.androidx.ui.tooling)
+    implementation(libs.androidx.ui.tooling)
 //    androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 

@@ -48,7 +48,7 @@ fun WizzardPrimaryButton(
     ) {
         if (isLoading) {
             CircularProgressIndicator(
-                modifier = modifier.semantics {
+                modifier = Modifier.semantics {
                     if (loaderTestTag != null) testTag = loaderTestTag
                 },
                 color = MaterialTheme.colorScheme.onPrimaryContainer

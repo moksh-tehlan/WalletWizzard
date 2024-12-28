@@ -11,19 +11,21 @@ android {
 }
 
 dependencies {
-
+    // Core dependencies
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.junit.ktx)
-    androidTestImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    debugImplementation(libs.truth)
+    implementation(projects.domain)
 
+    // Room dependencies
     implementation(libs.androidx.room.runtime)
-    annotationProcessor(libs.androidx.room.compiler)
-    testImplementation(libs.androidx.room.testing)
     implementation(libs.androidx.room.ktx)
+    annotationProcessor(libs.androidx.room.compiler)
     ksp(libs.androidx.room.compiler)
 
-    implementation(projects.domain)
+    // Unit Testing dependencies
+    testImplementation(libs.bundles.testing)
+
+    // Instrumentation Testing dependencies
+    androidTestImplementation(libs.bundles.androidTesting)
 }

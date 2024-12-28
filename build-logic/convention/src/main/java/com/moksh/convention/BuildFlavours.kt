@@ -19,13 +19,15 @@ internal fun Project.configureProductFlavors(
             create("development") {
                 val devProps = EnvConfigUtil.loadProperties(project, "development")
                 dimension = "environment"
-                configureDevelopmentFlavor(extensionType,devProps)
+                devProps?.let {
+                    configureDevelopmentFlavor(extensionType,it)
+                }
             }
 
             create("production") {
                 val prodProps = EnvConfigUtil.loadProperties(project,"production")
                 dimension = "environment"
-                configureProductionFlavor(prodProps)
+                prodProps?.let{ configureProductionFlavor(it) }
             }
         }
     }

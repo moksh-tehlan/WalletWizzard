@@ -1,0 +1,68 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ "main", "development", "staging" ]
+  pull_request:
+    branches: [ "main", "development", "staging" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # The environment will be selected based on the branch or can be manually specified in GitHub UI
+    environment: ${{ github.event_name == 'pull_request' && 'development' || github.ref_name }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Create environment file
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          ENABLE_LOGGING: ${{ secrets.ENABLE_LOGGING }}
+        run: |
+          ENV_FILE=".env/.${{ github.event_name == 'pull_request' && 'development' || github.ref_name }}"
+          if [ -f "$ENV_FILE" ]; then
+            echo "Using environment file: $ENV_FILE"
+            cp "$ENV_FILE" .env
+          else
+            echo "Environment file $ENV_FILE not found!"
+            exit 1
+          fi
+
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_FILE }}" > keystore_b64.txt
+          base64 -d keystore_b64.txt > app/keystores/wallet-wizzard-dev.jks
+          rm keystore_b64.txt
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDevelopmentDebug
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.event_name == 'pull_request' && 'development' || github.ref_name }}-debug
+          path: app/build/outputs/apk/development/debug/app-development-debug.apk
