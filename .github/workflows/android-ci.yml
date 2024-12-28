@@ -35,7 +35,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Create environment file
+      - name: Creating environment file
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
