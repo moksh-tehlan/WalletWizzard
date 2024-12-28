@@ -27,12 +27,12 @@ jobs:
 
       - name: Create .production file
         run: |
-          echo 'BASE_URL="${{ secrets.BASE_URL }}"' > .env/.production
-          echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> .env/.production
-          echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> .env/.production
-          echo "STORE_PASSWORD=${{ secrets.STORE_PASSWORD }}" >> .env/.production
-          echo "STORE_FILE=${{ secrets.STORE_FILE }}" >> .env/.production
-          echo "ENABLE_LOGGING=${{ secrets.ENABLE_LOGGING }}" >> .env/.production
+          echo "BASE_URL=\"${{ secrets.BASE_URL }}\"" > .env/${{ env.ENV_FILE }}
+          echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> .env/${{ env.ENV_FILE }}
+          echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> .env/${{ env.ENV_FILE }}
+          echo "STORE_PASSWORD=${{ secrets.STORE_PASSWORD }}" >> .env/${{ env.ENV_FILE }}
+          echo "STORE_FILE=${{ secrets.STORE_FILE }}" >> .env/${{ env.ENV_FILE }}
+          echo "ENABLE_LOGGING=${{ secrets.ENABLE_LOGGING }}" >> .env/${{ env.ENV_FILE }}
 
       # Create app/keystores directory and decode the keystore file
       - name: Decode and create keystore
