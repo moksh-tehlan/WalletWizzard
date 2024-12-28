@@ -64,6 +64,7 @@ jobs:
 
       - name: Decode Keystore
         run: |
+          mkdir -p app/keystores
           echo "${{ secrets.KEYSTORE_FILE }}" > keystore_b64.txt
           base64 -d keystore_b64.txt > app/keystores/wallet-wizzard.jks
           rm keystore_b64.txt
