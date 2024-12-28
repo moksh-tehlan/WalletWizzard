@@ -94,7 +94,7 @@ jobs:
           path: app/build/outputs/apk/production/release/app-production-release.apk
 
       - name: Notify Slack about build
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@v2.2.0
         with:
           payload: |
             {
@@ -117,9 +117,9 @@ jobs:
         with:
           token: ${{ secrets.SLACK_BOT_TOKEN }}
           path: app/build/outputs/apk/production/release/app-production-release.apk
+          channel: android-builds # single channel name
           filename: android-build-${{ github.run_number }}.apk
           initial_comment: "Here's the APK file for build #${{ github.run_number }} 📱"
-          channel: android-builds
 
       - name: Display structure of build files
         run: ls -R app/build/outputs/apk/production/release/
