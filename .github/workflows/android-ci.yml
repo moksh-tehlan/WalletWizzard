@@ -112,7 +112,7 @@ jobs:
           token: ${{ secrets.SLACK_BOT_TOKEN }}
           path: app/build/outputs/apk/production/release/app-production-release.apk
           channel: android-builds # single channel name
-          filename: android-build-${{ github.run_number }}.apk
+#          filename: android-build-${{ github.run_number }}.apk
           initial_comment: "Here's the APK file for build #${{ github.run_number }} 📱"
 
       - name: Display structure of build files
