@@ -15,6 +15,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Cache Gradle Wrapper
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+
+      # Cache Gradle Dependencies
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-caches-
+
+      # Cache Android build
+      - name: Cache Android Build
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.android/build-cache
+            ~/.android/cache
+          key: ${{ runner.os }}-android-cache-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-android-cache-
+
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
@@ -48,8 +75,17 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      # Configure Gradle for optimal CI performance
+      - name: Configure Gradle properties
+        run: |
+          mkdir -p ~/.gradle
+          echo "org.gradle.daemon=false" >> ~/.gradle/gradle.properties
+          echo "org.gradle.parallel=true" >> ~/.gradle/gradle.properties
+          echo "org.gradle.jvmargs=-Xmx4g -XX:+HeapDumpOnOutOfMemoryError" >> ~/.gradle/gradle.properties
+          echo "org.gradle.workers.max=2" >> ~/.gradle/gradle.properties
+
       - name: Build Release APK
-        run: ./gradlew assembleProductionRelease
+        run: ./gradlew assembleProductionRelease --build-cache --parallel
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
@@ -59,3 +95,10 @@ jobs:
 
       - name: Display structure of build files
         run: ls -R app/build/outputs/apk/production/release/
+
+      # Optional: Clean up caches if they get too large
+      - name: Cleanup Gradle Cache
+        # Remove older versions of dependencies
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
