@@ -93,27 +93,20 @@ jobs:
           name: app-release
           path: app/build/outputs/apk/production/release/app-production-release.apk
 
-      - name: Notify Slack about build
-        uses: slackapi/slack-github-action@v2.0.0
+      - name: Send build to Slack
+        uses: moksh-tehlan/slack-build-notify-action@v1.0.0
         with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-          webhook-type: incoming-webhook
-          payload: |
-            text: "*GitHub Action build result*: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
-            blocks:
-              - type: "section"
-                text:
-                  type: "mrkdwn"
-                  text: "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
-
-      - name: Upload APK to Slack
-        uses: adrey/slack-file-upload-action@master
-        with:
-          token: ${{ secrets.SLACK_BOT_TOKEN }}
-          path: app/build/outputs/apk/production/release/app-production-release.apk
-          channel: android-builds # single channel name
-          filename: android-build-${{ github.run_number }}.apk
-          initial_comment: "Here's the APK file for build #${{ github.run_number }} 📱"
+          slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel: 'android-builds'
+          file-path: 'app/build/outputs/apk/production/release/app-production-release.apk'
+          build-number: ${{ github.run_number }}
+          build-status: ${{ job.status }}
+          commit-url: ${{ github.event.head_commit.url }}
+          message-title: '🚀 New Android Build'
+          message-color: '#36a64f'
+          app-name: 'Wallet Wizzard'
+          file-comment: '📱 Latest Production APK'
 
       - name: Display structure of build files
         run: ls -R app/build/outputs/apk/production/release/
