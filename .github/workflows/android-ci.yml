@@ -119,7 +119,7 @@ jobs:
           path: app/build/outputs/apk/production/release/app-production-release.apk
           filename: android-build-${{ github.run_number }}.apk
           initial_comment: "Here's the APK file for build #${{ github.run_number }} 📱"
-          channels: android-builds
+          channel: android-builds
 
       - name: Display structure of build files
         run: ls -R app/build/outputs/apk/production/release/
