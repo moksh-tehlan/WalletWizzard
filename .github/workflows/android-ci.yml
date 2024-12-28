@@ -98,7 +98,7 @@ jobs:
         with:
           slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
           slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel: 'android-builds'
+          channel: 'C086SMUA7B6'
           file-path: 'app/build/outputs/apk/production/release/app-production-release.apk'
           build-number: ${{ github.run_number }}
           build-status: ${{ job.status }}
