@@ -94,7 +94,7 @@ jobs:
           path: app/build/outputs/apk/production/release/app-production-release.apk
 
       - name: Send build to Slack
-        uses: moksh-tehlan/slack-build-notify-action@v1.0.6
+        uses: moksh-tehlan/slack-build-notify-action@v1.0.7
         with:
           slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
           slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
