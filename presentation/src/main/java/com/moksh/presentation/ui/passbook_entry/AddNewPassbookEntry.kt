@@ -1,10 +1,5 @@
 package com.moksh.presentation.ui.passbook_entry
 
-import android.widget.Toast
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,10 +11,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -31,13 +23,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.moksh.domain.model.response.PaymentMode
 import com.moksh.domain.model.response.TransactionType
 import com.moksh.presentation.core.theme.WalletWizzardTheme
 import com.moksh.presentation.core.theme.WizzardWhite
@@ -61,11 +50,9 @@ fun AddNewPassbookEntry(
     selectedCategoryId: String? = null,
     selectedPaymentModeId: String? = null,
 ) {
-    val context = LocalContext.current
     ObserveAsEvents(flow = viewModel.passbookEvent) {
         when (it) {
             is PassbookEntryEvent.TransactionSaved -> {
-                Toast.makeText(context, "Transaction Saved", Toast.LENGTH_SHORT).show()
                 onTransactionSave()
             }
 
@@ -116,7 +103,7 @@ private fun AddNewPassbookEntryView(
                     contentDescription = "Back Arrow",
                     tint = WizzardWhite
                 )
-                Gap(gapSpace = GapSpace.MAX)
+                Gap(size = GapSpace.MAX)
                 Text(
                     text = topBarTitle,
                     style = MaterialTheme.typography.titleMedium.copy(color = WizzardWhite)
@@ -135,7 +122,8 @@ private fun AddNewPassbookEntryView(
         ) {
             WizzardTextField(
                 heading = "AMOUNT",
-                value = state.amount.toString(),
+                hint = "0",
+                value = state.amount,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
                 ),
@@ -168,71 +156,19 @@ private fun AddNewPassbookEntryView(
                 onValueChange = { },
             )
             Gap(size = 40.dp)
-            Gap(gapSpace = GapSpace.MAX)
+            Gap(size = GapSpace.MAX)
             WizzardPrimaryButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(60.dp),
                 text = "SAVE",
+                isLoading = state.isLoading,
                 onClick = {
                     onAction(PassbookEntryAction.SaveTransaction)
                 },
                 enabled = true,
             )
         }
-    }
-}
-
-@Composable
-private fun PaymentMethodSelector(
-    selectedMode: PaymentMode?,
-    paymentModes: List<PaymentMode>,
-    onChangePaymentMode: (PaymentMode) -> Unit,
-) {
-    Column {
-        Text(
-            text = "Payment Mode",
-            style = MaterialTheme.typography.bodyMedium.copy(
-                color = MaterialTheme.colorScheme.onBackground.copy(.7f)
-            )
-        )
-        Gap(size = 6.dp)
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(paymentModes) {
-                PaymentModeChip(
-                    mode = it,
-                    isSelected = selectedMode == it,
-                    onClick = onChangePaymentMode
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun PaymentModeChip(
-    mode: PaymentMode,
-    isSelected: Boolean = false,
-    onClick: (PaymentMode) -> Unit,
-) {
-    val backgroundColor =
-        if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
-    val textColor =
-        if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onBackground
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(50))
-            .background(backgroundColor)
-            .padding(horizontal = 20.dp, vertical = 8.dp)
-            .clickable {
-                onClick(mode)
-            }
-    ) {
-        Text(text = mode.name, style = MaterialTheme.typography.bodyMedium.copy(color = textColor))
     }
 }
 

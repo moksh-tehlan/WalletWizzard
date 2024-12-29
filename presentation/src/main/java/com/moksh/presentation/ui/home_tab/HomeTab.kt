@@ -185,7 +185,7 @@ private fun HomeTabView(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = "Savings Pocket", style = MaterialTheme.typography.bodyMedium)
-            Gap(gapSpace = GapSpace.MAX)
+            Gap(size = GapSpace.MAX)
             Box(
                 modifier = Modifier
                     .clip(CircleShape)

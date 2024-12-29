@@ -38,7 +38,7 @@ fun AdditionalDataText(
                 color = color
             )
         )
-        Gap(gapSpace = GapSpace.MAX)
+        Gap(size = GapSpace.MAX)
         Icon(
             modifier = Modifier.size(10.dp),
             imageVector = forwardIcon, contentDescription = "forward icon",

@@ -28,6 +28,7 @@ fun PassbookItem(
     remark: String,
     amount: String,
     amountColor: Color,
+    category: String,
 ) {
     Box(
         modifier = Modifier
@@ -48,7 +49,7 @@ fun PassbookItem(
                             .padding(5.dp)
                     ) {
                         Text(
-                            text = "Food",
+                            text = category,
                             style = MaterialTheme.typography.bodySmall
                         )
                     }

@@ -24,11 +24,11 @@ fun RowScope.Gap(size: Dp) {
 }
 
 @Composable
-fun ColumnScope.Gap(gapSpace: GapSpace) {
+fun ColumnScope.Gap(size: GapSpace) {
     Spacer(modifier = Modifier.weight(1f))
 }
 
 @Composable
-fun RowScope.Gap(gapSpace: GapSpace) {
+fun RowScope.Gap(size: GapSpace) {
     Spacer(modifier = Modifier.weight(1f))
 }

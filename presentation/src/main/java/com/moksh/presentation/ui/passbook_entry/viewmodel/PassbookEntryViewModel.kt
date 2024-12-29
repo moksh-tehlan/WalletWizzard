@@ -104,8 +104,23 @@ class PassbookEntryViewModel @Inject constructor(
     }
 
     private fun amountChanged(amount: String) {
-        _passbookEntryState.update {
-            it.copy(amount = amount.toDouble())
+        // If empty, set to empty and return
+        if (amount.isEmpty()) {
+            _passbookEntryState.update { it.copy(amount = amount) }
+            return
+        }
+
+        // Check if the input is a valid number format
+        val isValidNumberFormat = amount.matches(Regex("^-?\\d*\\.?\\d*$"))
+        if (!isValidNumberFormat) return
+
+        // Try parsing to Double to check range
+        try {
+            amount.toDouble() // Just to validate if it's in Double range
+            _passbookEntryState.update { it.copy(amount = amount) }
+        } catch (e: NumberFormatException) {
+            // If number is too large/small for Double, keep previous value
+            return
         }
     }
 
@@ -173,9 +188,12 @@ class PassbookEntryViewModel @Inject constructor(
     }
 
     private fun saveIncome() {
+        _passbookEntryState.update {
+            it.copy(isLoading = true)
+        }
         viewModelScope.launch {
             val income = SaveTransaction(
-                amount = _passbookEntryState.value.amount,
+                amount = _passbookEntryState.value.amount.toDouble(),
                 remark = _passbookEntryState.value.remark,
                 category = _passbookEntryState.value.category,
                 paymentMode = _passbookEntryState.value.paymentMode,
@@ -183,10 +201,18 @@ class PassbookEntryViewModel @Inject constructor(
             )
             when (val result = saveIncome.invoke(income)) {
                 is Result.Error -> {
+                    _passbookEntryState.update {
+                        it.copy(isLoading = false)
+                    }
                     Timber.d("Error: ${result.error.asUiText().asString(context)}")
                 }
 
-                is Result.Success -> _passbookEvent.emit(PassbookEntryEvent.TransactionSaved)
+                is Result.Success -> {
+                    _passbookEntryState.update {
+                        it.copy(isLoading = false)
+                    }
+                    _passbookEvent.emit(PassbookEntryEvent.TransactionSaved)
+                }
             }
         }
 
@@ -195,7 +221,7 @@ class PassbookEntryViewModel @Inject constructor(
     private fun saveExpense() {
         viewModelScope.launch {
             val expense = SaveTransaction(
-                amount = _passbookEntryState.value.amount,
+                amount = _passbookEntryState.value.amount.toDouble(),
                 remark = _passbookEntryState.value.remark,
                 category = _passbookEntryState.value.category,
                 paymentMode = _passbookEntryState.value.paymentMode,

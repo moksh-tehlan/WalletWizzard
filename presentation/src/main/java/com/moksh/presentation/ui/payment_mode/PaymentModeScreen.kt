@@ -105,7 +105,7 @@ private fun PaymentModeScreenView(
                     contentDescription = "Back Arrow",
                     tint = WizzardWhite
                 )
-                Gap(gapSpace = GapSpace.MAX)
+                Gap(size = GapSpace.MAX)
                 Text(
                     text = "Choose Payment Mode",
                     style = MaterialTheme.typography.titleMedium.copy(color = WizzardWhite)

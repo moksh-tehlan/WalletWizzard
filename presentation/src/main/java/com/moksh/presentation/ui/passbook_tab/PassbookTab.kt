@@ -21,7 +21,6 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -30,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moksh.domain.model.response.TransactionType
 import com.moksh.presentation.core.theme.WalletWizzardTheme
 import com.moksh.presentation.core.theme.WizzardBlack
@@ -37,28 +37,31 @@ import com.moksh.presentation.core.theme.WizzardGreen
 import com.moksh.presentation.core.theme.WizzardRed
 import com.moksh.presentation.core.theme.WizzardWhite
 import com.moksh.presentation.core.theme.addIcon
+import com.moksh.presentation.core.utils.toFormattedTime
+import com.moksh.presentation.core.utils.toStringAmount
 import com.moksh.presentation.ui.passbook_tab.components.PassbookItem
 import com.moksh.presentation.ui.passbook_tab.components.PassbookViewPager
-import com.moksh.presentation.ui.passbook_entry.component.EntryType
-import com.moksh.presentation.ui.passbook_tab.viewmodel.PassbookState
+import com.moksh.presentation.ui.passbook_tab.viewmodel.PassBookEntryState
 import com.moksh.presentation.ui.passbook_tab.viewmodel.PassbookViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun PassbookTab(
-    onNewEntry: (TransactionType) -> Unit,
-    viewModel: PassbookViewModel = hiltViewModel()
+    onNewEntry: (TransactionType) -> Unit, viewModel: PassbookViewModel = hiltViewModel()
 ) {
+    val viewmodelState = viewModel.passbookState.collectAsStateWithLifecycle().value
     PassbookTabView(
         onNewEntry = onNewEntry,
-        viewModel.passbookState.collectAsState().value,
+        incomeState = viewmodelState.incomeState,
+        expenseState = viewmodelState.expenseState,
     )
 }
 
 @Composable
 private fun PassbookTabView(
     onNewEntry: (TransactionType) -> Unit,
-    state: PassbookState
+    incomeState: PassBookEntryState,
+    expenseState: PassBookEntryState
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 }, initialPage = 0)
     val tabs = listOf("Income", "Expenses")
@@ -66,11 +69,9 @@ private fun PassbookTabView(
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
-            TabRow(
-                selectedTabIndex = pagerState.currentPage,
+            TabRow(selectedTabIndex = pagerState.currentPage,
                 containerColor = MaterialTheme.colorScheme.background,
                 contentColor = MaterialTheme.colorScheme.onBackground,
                 indicator = { tabPositions ->
@@ -79,8 +80,7 @@ private fun PassbookTabView(
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
                     )
                 },
-                divider = {}
-            ) {
+                divider = {}) {
                 tabs.forEachIndexed { index, tabTitle ->
                     Box(
                         modifier = Modifier
@@ -91,12 +91,10 @@ private fun PassbookTabView(
                                 indication = null,
                             ) {
                                 scope.launch { pagerState.animateScrollToPage(index) }
-                            },
-                        contentAlignment = Alignment.Center
+                            }, contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = tabTitle,
-                            style = MaterialTheme.typography.bodySmall
+                            text = tabTitle, style = MaterialTheme.typography.bodySmall
                         )
                     }
                 }
@@ -107,31 +105,35 @@ private fun PassbookTabView(
                 if (it == 0) {
                     PassbookViewPager(
                         modifier = Modifier.fillMaxSize(),
-                        amount = "10,000",
+                        amount = incomeState.currentMonthSum.toStringAmount(),
                         amountColor = WizzardGreen,
                         description = "Contribution this month",
-                        data = state.incomeList
+                        getDate = {transaction -> transaction.createdAt},
+                        data = incomeState.transactionList
                     ) { pageIndex, data ->
                         PassbookItem(
-                            amount = data.amount.toString(),
+                            amount = data.amount.toStringAmount(),
                             amountColor = WizzardGreen,
                             remark = data.remark ?: "",
-                            entryTime = data.createdAt.toString()
+                            category = data.category?.name ?: "",
+                            entryTime = data.createdAt.toFormattedTime()
                         )
                     }
                 } else {
                     PassbookViewPager(
                         modifier = Modifier.fillMaxSize(),
-                        amount = "10,000",
+                        amount = expenseState.currentMonthSum.toStringAmount(),
                         amountColor = WizzardRed,
                         description = "Contribution this month",
-                        data = state.expenseList
+                        getDate = {transaction -> transaction.createdAt},
+                        data = expenseState.transactionList
                     ) { pageIndex, data ->
                         PassbookItem(
-                            amount = data.amount.toString(),
+                            amount = data.amount.toStringAmount(),
                             amountColor = WizzardRed,
                             remark = data.remark ?: "",
-                            entryTime = data.createdAt.toString()
+                            category = data.category?.name ?: "",
+                            entryTime = data.createdAt.toFormattedTime()
                         )
                     }
                 }
@@ -151,10 +153,7 @@ private fun PassbookTabView(
                     } else {
                         onNewEntry(TransactionType.Expenses)
                     }
-                },
-            imageVector = addIcon,
-            tint = WizzardBlack,
-            contentDescription = "Add"
+                }, imageVector = addIcon, tint = WizzardBlack, contentDescription = "Add"
         )
     }
 }
@@ -163,5 +162,13 @@ private fun PassbookTabView(
 @Composable
 @Preview
 private fun PassbookTabPreview() {
-    WalletWizzardTheme { Scaffold { PassbookTabView(onNewEntry = {}, state = PassbookState()) } }
+    WalletWizzardTheme {
+        Scaffold {
+            PassbookTabView(
+                onNewEntry = {},
+                expenseState = PassBookEntryState(),
+                incomeState = PassBookEntryState()
+            )
+        }
+    }
 }

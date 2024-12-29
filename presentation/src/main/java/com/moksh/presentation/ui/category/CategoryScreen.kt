@@ -106,7 +106,7 @@ fun CategoryScreenView(
                     contentDescription = "Back Arrow",
                     tint = WizzardWhite
                 )
-                Gap(gapSpace = GapSpace.MAX)
+                Gap(size = GapSpace.MAX)
                 Text(
                     text = "Choose Category",
                     style = MaterialTheme.typography.titleMedium.copy(color = WizzardWhite)

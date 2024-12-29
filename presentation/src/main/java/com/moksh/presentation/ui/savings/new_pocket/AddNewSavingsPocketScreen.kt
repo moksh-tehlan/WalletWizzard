@@ -51,7 +51,7 @@ private fun AddNewSavingsPocketScreenView() {
                     contentDescription = "Back Arrow",
                     tint = WizzardWhite
                 )
-                Gap(gapSpace = GapSpace.MAX)
+                Gap(size = GapSpace.MAX)
                 Text(
                     text = "Add New Pocket",
                     style = MaterialTheme.typography.titleMedium.copy(color = WizzardWhite)
@@ -87,7 +87,7 @@ private fun AddNewSavingsPocketScreenView() {
                 enabled = false,
                 onClick = { },
             )
-            Gap(gapSpace = GapSpace.MAX)
+            Gap(size = GapSpace.MAX)
             WizzardPrimaryButton(
                 modifier = Modifier
                     .fillMaxWidth()
