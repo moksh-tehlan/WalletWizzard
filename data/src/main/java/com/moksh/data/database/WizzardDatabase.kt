@@ -7,10 +7,12 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.moksh.data.dao.CategoryDao
 import com.moksh.data.dao.PaymentModeDao
+import com.moksh.data.dao.SavingDao
 import com.moksh.data.dao.TransactionDao
 import com.moksh.data.dao.UserDao
 import com.moksh.data.entities.local.CategoryEntity
 import com.moksh.data.entities.local.PaymentModeEntity
+import com.moksh.data.entities.local.SavingsEntity
 import com.moksh.data.entities.local.TransactionEntity
 import com.moksh.data.entities.local.UserEntity
 import com.moksh.data.entities.utils.Converters
@@ -24,7 +26,8 @@ import java.util.concurrent.Executors
         UserEntity::class,
         CategoryEntity::class,
         PaymentModeEntity::class,
-    ], version = 7
+        SavingsEntity::class,
+    ], version = 8
 )
 @TypeConverters(Converters::class)
 abstract class WizzardDatabase : RoomDatabase() {
@@ -32,6 +35,7 @@ abstract class WizzardDatabase : RoomDatabase() {
     abstract fun transactionDao(): TransactionDao
     abstract fun categoryDao(): CategoryDao
     abstract fun paymentModeDao(): PaymentModeDao
+    abstract fun savingsDao(): SavingDao
 
     companion object {
         private const val DATABASE_NAME = "wizzard_database.db"

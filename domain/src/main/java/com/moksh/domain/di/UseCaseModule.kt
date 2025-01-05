@@ -3,6 +3,7 @@ package com.moksh.domain.di
 import com.moksh.domain.repository.AuthRepository
 import com.moksh.domain.repository.CategoryRepository
 import com.moksh.domain.repository.PaymentModeRepository
+import com.moksh.domain.repository.SavingRepository
 import com.moksh.domain.repository.TransactionRepository
 import com.moksh.domain.repository.UserRepository
 import com.moksh.domain.usecases.auth.SendOtp
@@ -16,6 +17,8 @@ import com.moksh.domain.usecases.income.SaveIncome
 import com.moksh.domain.usecases.payment_mode.GetPaymentModes
 import com.moksh.domain.usecases.payment_mode.InsertDefaultPaymentMode
 import com.moksh.domain.usecases.payment_mode.SavePaymentMode
+import com.moksh.domain.usecases.savings.CreateSavings
+import com.moksh.domain.usecases.savings.GetSavings
 import com.moksh.domain.usecases.user.GetUser
 import com.moksh.domain.usecases.user.SaveUser
 import com.moksh.domain.usecases.user.UpdateUser
@@ -99,4 +102,13 @@ object UseCaseModule {
     fun provideVerifyOtpUseCase(authRepository: AuthRepository) =
         VerifyOtp(authRepository = authRepository)
 
+    @Provides
+    @Singleton
+    fun provideCreateSavingsUseCase(savingsRepository: SavingRepository) =
+        CreateSavings(savingRepository = savingsRepository)
+
+    @Provides
+    @Singleton
+    fun provideGetSavingsUseCase(savingsRepository: SavingRepository) =
+        GetSavings(savingRepository = savingsRepository)
 }

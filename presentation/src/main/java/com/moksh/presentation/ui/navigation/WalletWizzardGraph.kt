@@ -146,7 +146,11 @@ private fun NavGraphBuilder.homeGraph(navController: NavController) {
             ProfileScreen()
         }
         composable<HomeRoutes.AddNewSavingsPocketScreen> {
-            AddNewSavingsPocketScreen()
+            AddNewSavingsPocketScreen(
+                onCreatingSuccess = {
+                    navController.popBackStack()
+                }
+            )
         }
         composable<HomeRoutes.WalletWizzardScreen> {
             BottomTab(

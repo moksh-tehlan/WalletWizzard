@@ -3,6 +3,7 @@ package com.moksh.data.di
 import com.moksh.data.database.WizzardDatabase
 import com.moksh.data.dao.CategoryDao
 import com.moksh.data.dao.PaymentModeDao
+import com.moksh.data.dao.SavingDao
 import com.moksh.data.dao.TransactionDao
 import com.moksh.data.dao.UserDao
 import dagger.Module
@@ -37,6 +38,12 @@ object DaoModule {
     @Provides
     fun providePaymentModeDao(wizzardDatabase: WizzardDatabase): PaymentModeDao {
         return wizzardDatabase.paymentModeDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideSavingsDao(wizzardDatabase: WizzardDatabase):SavingDao{
+        return wizzardDatabase.savingsDao()
     }
 
 }

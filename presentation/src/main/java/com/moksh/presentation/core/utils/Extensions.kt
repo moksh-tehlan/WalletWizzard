@@ -35,6 +35,7 @@ enum class DatePatterns(val pattern: String) {
     MonthYearPattern("MMM yyyy"),
     DayPattern("EEEE"),  // Full day name
     ShortDayPattern("EEE"), // Short day name
-    YearPattern("yyyy")
+    YearPattern("yyyy"),
+    DaysPattern("dd"),
 }
 
