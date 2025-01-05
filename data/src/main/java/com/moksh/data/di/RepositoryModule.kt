@@ -3,11 +3,13 @@ package com.moksh.data.di
 import com.moksh.data.repository.AuthRepositoryImpl
 import com.moksh.data.repository.CategoryRepositoryImpl
 import com.moksh.data.repository.PaymentModeRepositoryImpl
+import com.moksh.data.repository.SavingRepositoryImpl
 import com.moksh.data.repository.TransactionRepositoryImpl
 import com.moksh.data.repository.UserRepositoryImpl
 import com.moksh.domain.repository.AuthRepository
 import com.moksh.domain.repository.CategoryRepository
 import com.moksh.domain.repository.PaymentModeRepository
+import com.moksh.domain.repository.SavingRepository
 import com.moksh.domain.repository.TransactionRepository
 import com.moksh.domain.repository.UserRepository
 import dagger.Binds
@@ -49,4 +51,10 @@ abstract class RepositoryModule {
     abstract fun bindAuthRepositoryImpl(
         authRepositoryImpl: AuthRepositoryImpl
     ): AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSavingsRepositoryImpl(
+        savingRepositoryImpl: SavingRepositoryImpl
+    ): SavingRepository
 }

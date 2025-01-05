@@ -8,6 +8,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,9 +34,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.moksh.domain.model.response.Savings
 import com.moksh.presentation.core.theme.WalletWizzardTheme
 import com.moksh.presentation.core.theme.WizzardGreen
 import com.moksh.presentation.core.theme.WizzardRed
@@ -47,15 +54,23 @@ import com.moksh.presentation.ui.common.clickable
 import com.moksh.presentation.ui.home_tab.components.BalanceItem
 import com.moksh.presentation.ui.home_tab.components.OverviewCard
 import com.moksh.presentation.ui.home_tab.components.SavingsCard
+import com.moksh.presentation.ui.home_tab.viewmodel.HomeViewModel
+import com.moksh.presentation.ui.home_tab.viewmodel.PocketState
+import timber.log.Timber
+import java.util.Calendar
+import java.util.Date
+import java.util.UUID
 
 @Composable
 fun HomeTab(
     onAddNewSavingsPocket: () -> Unit,
     onProfileClick: () -> Unit,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     HomeTabView(
-        onAddNewSavingsPocket,
-        onProfileClick
+        onAddNewSavingsPocket = onAddNewSavingsPocket,
+        onProfileClick = onProfileClick,
+        pocketState = viewModel.pocketState.collectAsStateWithLifecycle().value
     )
 }
 
@@ -63,6 +78,7 @@ fun HomeTab(
 private fun HomeTabView(
     onAddNewSavingsPocket: () -> Unit,
     onProfileClick: () -> Unit,
+    pocketState: PocketState,
 ) {
     val scrollState = rememberScrollState()
 
@@ -71,7 +87,7 @@ private fun HomeTabView(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 20.dp)
-            .padding(bottom = 100.dp)
+            .padding(bottom = 70.dp)
             .verticalScroll(scrollState),
     ) {
         Gap(size = 30.dp)
@@ -184,7 +200,7 @@ private fun HomeTabView(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Savings Pocket", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Pockets", style = MaterialTheme.typography.bodyMedium)
             Gap(size = GapSpace.MAX)
             Box(
                 modifier = Modifier
@@ -212,14 +228,12 @@ private fun HomeTabView(
             }
         }
         Gap(size = 15.dp)
-        Column {
-            List(
-                size = 5,
-                init = {
-                    SavingsCard()
-                    Gap(15.dp)
-                }
-            )
+        Column(
+            verticalArrangement = Arrangement.spacedBy(15.dp)
+        ) {
+            pocketState.pockets.take(5).map {
+                SavingsCard(pocket = it)
+            }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -245,7 +259,7 @@ private fun HomeTabView(
                     )
                 }
             }
-            Gap(15.dp)
+            Gap(10.dp)
         }
     }
 }
@@ -258,7 +272,29 @@ private fun HomeTabPreview() {
         Scaffold {
             HomeTabView(
                 onAddNewSavingsPocket = {},
-                onProfileClick = {}
+                onProfileClick = {},
+                pocketState = PocketState(
+                    pockets = List(
+                        size = 3,
+                        init = {
+                            Savings(
+                                id = UUID.randomUUID().toString(),  // Generate random UUID
+                                name = "Samsung Watch Ultra",
+                                targetAmount = 100000.0,
+                                currentAmount = 25000.0,  // 25% progress
+                                endDate = Calendar.getInstance().apply {
+                                    add(Calendar.MONTH, 3)  // 3 months from now
+                                }.time,
+                                progressBarColor = Color.Blue.toArgb(),  // Using Android's Color class
+                                notes = "Saving for my dream watch",
+                                isActive = true,
+                                isSynced = false,
+                                createdAt = Date(),  // Current date/time
+                                updatedAt = Date()   // Current date/time
+                            )
+                        }
+                    )
+                ),
             )
         }
     }

@@ -20,22 +20,54 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moksh.presentation.core.theme.WalletWizzardTheme
 import com.moksh.presentation.core.theme.WizzardWhite
 import com.moksh.presentation.core.theme.backArrowIcon
+import com.moksh.presentation.core.utils.DatePatterns
+import com.moksh.presentation.core.utils.toFormattedTime
 import com.moksh.presentation.ui.common.Gap
 import com.moksh.presentation.ui.common.GapSpace
+import com.moksh.presentation.ui.common.ObserveAsEvents
+import com.moksh.presentation.ui.common.WizzardDatePicker
 import com.moksh.presentation.ui.common.WizzardPrimaryButton
 import com.moksh.presentation.ui.common.WizzardTextField
-import com.moksh.presentation.ui.profile.components.ProfileEditTextField
+import com.moksh.presentation.ui.savings.new_pocket.viewmodel.AddNewPocketAction
+import com.moksh.presentation.ui.savings.new_pocket.viewmodel.AddNewPocketEvent
+import com.moksh.presentation.ui.savings.new_pocket.viewmodel.AddNewPocketState
+import com.moksh.presentation.ui.savings.new_pocket.viewmodel.AddNewPocketViewModel
 
 @Composable
-fun AddNewSavingsPocketScreen() {
-    AddNewSavingsPocketScreenView()
+fun AddNewSavingsPocketScreen(
+    viewModel: AddNewPocketViewModel = hiltViewModel(),
+    onCreatingSuccess: () -> Unit,
+) {
+    ObserveAsEvents(viewModel.addNewPocketFlow) { event ->
+        when (event) {
+            is AddNewPocketEvent.CreatePocketSuccess -> onCreatingSuccess()
+        }
+    }
+    val state = viewModel.addNewPocketState.collectAsStateWithLifecycle().value;
+    AddNewSavingsPocketScreenView(
+        state = state,
+        onAction = viewModel::onAction,
+    )
 }
 
 @Composable
-private fun AddNewSavingsPocketScreenView() {
+private fun AddNewSavingsPocketScreenView(
+    state: AddNewPocketState,
+    onAction: (AddNewPocketAction) -> Unit,
+) {
+    if (state.showDatePicker) {
+        WizzardDatePicker(
+            onDateSelected = { date ->
+                date?.let { onAction(AddNewPocketAction.OnDateChange(it)) }
+            },
+            onDismiss = { onAction(AddNewPocketAction.OnToggleDatePicker) }
+        )
+    }
     Scaffold(
         topBar = {
             Row(
@@ -67,25 +99,34 @@ private fun AddNewSavingsPocketScreenView() {
         ) {
             WizzardTextField(
                 heading = "POCKET NAME",
-                value = "Samsung watch ultra",
-                onValueChange = { },
+                hint = "Enter pocket name",
+                value = state.pocketName,
+                onValueChange = { name ->
+                    onAction(AddNewPocketAction.OnPocketNameChange(name))
+                },
             )
             Gap(size = 15.dp)
             WizzardTextField(
                 heading = "AMOUNT",
-                value = "10,000",
+                hint = "Enter amount",
+                value = state.amount,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
                 ),
-                onValueChange = { },
+                onValueChange = { amount ->
+                    onAction(AddNewPocketAction.OnAmountChange(amount))
+                },
             )
             Gap(size = 15.dp)
-            ProfileEditTextField(
+            WizzardTextField(
                 heading = "END DATE",
-                value = "12/01/2023",
+                hint = "Select end date",
+                value = state.date?.toFormattedTime(DatePatterns.ShortDatePattern) ?: "",
                 onValueChange = { },
                 enabled = false,
-                onClick = { },
+                onClick = {
+                    onAction(AddNewPocketAction.OnToggleDatePicker)
+                },
             )
             Gap(size = GapSpace.MAX)
             WizzardPrimaryButton(
@@ -93,7 +134,10 @@ private fun AddNewSavingsPocketScreenView() {
                     .fillMaxWidth()
                     .height(60.dp),
                 text = "ADD NEW POCKET",
-                onClick = {},
+                onClick = {
+                    onAction(AddNewPocketAction.OnAddNewPocket)
+                },
+                isLoading = state.isButtonLoading,
                 enabled = true,
             )
             Gap(size = 15.dp)
@@ -104,5 +148,10 @@ private fun AddNewSavingsPocketScreenView() {
 @Composable
 @Preview
 private fun AddNewSavingsPocketScreenPreview() {
-    WalletWizzardTheme { AddNewSavingsPocketScreenView() }
+    WalletWizzardTheme {
+        AddNewSavingsPocketScreenView(
+            state = AddNewPocketState(),
+            onAction = {}
+        )
+    }
 }
