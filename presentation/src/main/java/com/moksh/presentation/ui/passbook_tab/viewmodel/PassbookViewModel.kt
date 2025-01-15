@@ -48,7 +48,10 @@ class PassbookViewModel @Inject constructor(
                             error = null
                         )
                         _passbookState.value =
-                            _passbookState.value.copy(incomeState = resultIncomeState)
+                            _passbookState.value.copy(
+                                incomeState = resultIncomeState,
+                                monthlyIncome = resultIncomeState.currentMonthSum
+                            )
                     }
                 }
 
@@ -80,7 +83,10 @@ class PassbookViewModel @Inject constructor(
                             error = null
                         )
                         _passbookState.value =
-                            _passbookState.value.copy(expenseState = resultIncomeState)
+                            _passbookState.value.copy(
+                                expenseState = resultIncomeState,
+                                monthlyExpense = resultIncomeState.currentMonthSum
+                            )
                     }
                 }
 

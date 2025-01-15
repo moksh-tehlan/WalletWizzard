@@ -17,21 +17,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.moksh.presentation.core.theme.WalletWizzardTheme
+import com.moksh.presentation.core.theme.WizzardBlue
 import com.moksh.presentation.core.theme.WizzardPurple
 import com.moksh.presentation.ui.common.Gap
 
 @Composable
 fun PassbookItem(
+    modifier: Modifier = Modifier,
     entryTime: String,
     remark: String,
     amount: String,
     amountColor: Color,
-    category: String,
+    paymentMode: String? = null,
+    category: String? = null,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .clip(RoundedCornerShape(3.dp))
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.surface)
@@ -40,20 +45,40 @@ fun PassbookItem(
         Column(modifier = Modifier.fillMaxWidth()) {
             Row {
                 Column(modifier = Modifier.weight(1f)) {
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(3.dp))
-                            .background(
-                                WizzardPurple
+                    category?.let {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(3.dp))
+                                .background(
+                                    WizzardPurple
+                                )
+                                .padding(5.dp)
+                        ) {
+                            Text(
+                                text = it,
+                                style = MaterialTheme.typography.bodySmall
                             )
-                            .padding(5.dp)
-                    ) {
-                        Text(
-                            text = category,
-                            style = MaterialTheme.typography.bodySmall
-                        )
+                        }
                     }
-                    Gap(size = 8.dp)
+
+                    paymentMode?.let {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(3.dp))
+                                .background(
+                                    WizzardBlue
+                                )
+                                .padding(5.dp)
+                        ) {
+                            Text(
+                                text = it,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    }
+                    if(category != null || paymentMode != null){
+                        Gap(size = 8.dp)
+                    }
                     Text(
                         text = remark,
                         style = MaterialTheme.typography.labelMedium
@@ -93,5 +118,20 @@ fun PassbookItem(
             )
         }
     }
-
 }
+
+@Composable
+@Preview
+fun PassbookItemPreview() {
+    WalletWizzardTheme {
+        PassbookItem(
+            entryTime = "12:00",
+            remark = "Salary",
+            amount = "10000",
+            amountColor = Color.Green,
+        )
+    }
+}
+
+
+

@@ -1,15 +1,22 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.moksh.presentation.ui.passbook_tab
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -21,6 +28,7 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -30,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.moksh.domain.model.response.Transaction
 import com.moksh.domain.model.response.TransactionType
 import com.moksh.presentation.core.theme.WalletWizzardTheme
 import com.moksh.presentation.core.theme.WizzardBlack
@@ -37,11 +46,13 @@ import com.moksh.presentation.core.theme.WizzardGreen
 import com.moksh.presentation.core.theme.WizzardRed
 import com.moksh.presentation.core.theme.WizzardWhite
 import com.moksh.presentation.core.theme.addIcon
+import com.moksh.presentation.core.utils.DatePatterns
 import com.moksh.presentation.core.utils.toFormattedTime
 import com.moksh.presentation.core.utils.toStringAmount
+import com.moksh.presentation.ui.passbook_tab.components.OverviewCard
 import com.moksh.presentation.ui.passbook_tab.components.PassbookItem
-import com.moksh.presentation.ui.passbook_tab.components.PassbookViewPager
 import com.moksh.presentation.ui.passbook_tab.viewmodel.PassBookEntryState
+import com.moksh.presentation.ui.passbook_tab.viewmodel.PassbookState
 import com.moksh.presentation.ui.passbook_tab.viewmodel.PassbookViewModel
 import kotlinx.coroutines.launch
 
@@ -51,33 +62,45 @@ fun PassbookTab(
 ) {
     val viewmodelState = viewModel.passbookState.collectAsStateWithLifecycle().value
     PassbookTabView(
-        onNewEntry = onNewEntry,
-        incomeState = viewmodelState.incomeState,
-        expenseState = viewmodelState.expenseState,
+        onNewEntry = onNewEntry, state = viewmodelState
     )
 }
 
 @Composable
-private fun PassbookTabView(
+fun PassbookTabView(
     onNewEntry: (TransactionType) -> Unit,
-    incomeState: PassBookEntryState,
-    expenseState: PassBookEntryState
+    state: PassbookState,
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 }, initialPage = 0)
     val tabs = listOf("Income", "Expenses")
     val scope = rememberCoroutineScope()
+    val isCardExpanded = remember { mutableStateOf(false) }
+    val incomeState = state.incomeState
+    val expenseState = state.expenseState
+
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxSize()
         ) {
-            TabRow(selectedTabIndex = pagerState.currentPage,
+            // Overview Card
+            OverviewCard(
+                modifier = Modifier.padding(top = 5.dp),
+                monthlyIncome = state.monthlyIncome,
+                monthlyExpenses = state.monthlyExpense,
+                isExpanded = isCardExpanded.value,
+                onExpandClick = { isCardExpanded.value = !isCardExpanded.value })
+
+            // Sticky Header (Tab Row)
+            TabRow(
+                selectedTabIndex = pagerState.currentPage,
                 containerColor = MaterialTheme.colorScheme.background,
                 contentColor = MaterialTheme.colorScheme.onBackground,
                 indicator = { tabPositions ->
                     TabRowDefaults.SecondaryIndicator(
-                        modifier = Modifier.tabIndicatorOffset(currentTabPosition = tabPositions[pagerState.currentPage]),
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
+                        modifier = Modifier.tabIndicatorOffset(
+                            currentTabPosition = tabPositions[pagerState.currentPage]
+                        ), color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
                     )
                 },
                 divider = {}) {
@@ -99,49 +122,67 @@ private fun PassbookTabView(
                     }
                 }
             }
-            HorizontalPager(
-                state = pagerState,
+
+            // Content
+            Box(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                if (it == 0) {
-                    PassbookViewPager(
-                        modifier = Modifier.fillMaxSize(),
-                        amount = incomeState.currentMonthSum.toStringAmount(),
-                        amountColor = WizzardGreen,
-                        description = "Contribution this month",
-                        getDate = {transaction -> transaction.createdAt},
-                        data = incomeState.transactionList
-                    ) { pageIndex, data ->
-                        PassbookItem(
-                            amount = data.amount.toStringAmount(),
-                            amountColor = WizzardGreen,
-                            remark = data.remark ?: "",
-                            category = data.category?.name ?: "",
-                            entryTime = data.createdAt.toFormattedTime()
-                        )
+                HorizontalPager(
+                    state = pagerState, modifier = Modifier.fillMaxSize()
+                ) { page ->
+                    val transactions = if (page == 0) {
+                        incomeState.transactionList
+                    } else {
+                        expenseState.transactionList
                     }
-                } else {
-                    PassbookViewPager(
+
+                    val groupedData = transactions.groupBy { item ->
+                        item.createdAt.toFormattedTime(DatePatterns.DatePattern)
+                    }
+
+                    LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        amount = expenseState.currentMonthSum.toStringAmount(),
-                        amountColor = WizzardRed,
-                        description = "Contribution this month",
-                        getDate = {transaction -> transaction.createdAt},
-                        data = expenseState.transactionList
-                    ) { pageIndex, data ->
-                        PassbookItem(
-                            amount = data.amount.toStringAmount(),
-                            amountColor = WizzardRed,
-                            remark = data.remark ?: "",
-                            category = data.category?.name ?: "",
-                            entryTime = data.createdAt.toFormattedTime()
-                        )
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        contentPadding = PaddingValues(top = 10.dp, bottom = 100.dp),
+                    ) {
+                        groupedData.forEach { (date, items) ->
+                            stickyHeader {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(MaterialTheme.colorScheme.background)
+                                        .padding(vertical = 10.dp)
+                                ) {
+                                    Text(
+                                        text = date,
+                                        style = MaterialTheme.typography.bodyMedium.copy(
+                                            color = MaterialTheme.colorScheme.onBackground.copy(
+                                                0.6f
+                                            )
+                                        ),
+                                        modifier = Modifier.padding(horizontal = 20.dp)
+                                    )
+                                }
+                            }
+
+                            items(items) { item ->
+                                PassbookItem(
+                                    modifier = Modifier.padding(horizontal = 10.dp),
+                                    amount = item.amount.toStringAmount(),
+                                    amountColor = if (page == 0) WizzardGreen else WizzardRed,
+                                    remark = item.remark ?: "",
+                                    category = item.category?.name,
+                                    entryTime = item.createdAt.toFormattedTime()
+                                )
+                            }
+                        }
                     }
                 }
             }
         }
         Icon(
             modifier = Modifier
-                .padding(bottom = 120.dp, end = 10.dp)
+                .padding(bottom = 100.dp, end = 10.dp)
                 .size(50.dp)
                 .clip(CircleShape)
                 .background(WizzardWhite)
@@ -166,8 +207,28 @@ private fun PassbookTabPreview() {
         Scaffold {
             PassbookTabView(
                 onNewEntry = {},
-                expenseState = PassBookEntryState(),
-                incomeState = PassBookEntryState()
+                state = PassbookState(
+                    expenseState = PassBookEntryState(transactionList = List(size = 10, init = {
+                        Transaction(
+                            id = "",
+                            amount = 20000.0,
+                            remark = "Helo there",
+                            type = TransactionType.Expenses,
+                            category = null,
+                            paymentMode = null
+                        )
+                    })),
+                    incomeState = PassBookEntryState(transactionList = List(size = 10, init = {
+                        Transaction(
+                            id = "",
+                            remark = "Hi there",
+                            amount = 20000.0,
+                            type = TransactionType.Income,
+                            category = null,
+                            paymentMode = null
+                        )
+                    })),
+                ),
             )
         }
     }

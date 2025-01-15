@@ -6,7 +6,6 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import java.util.Date
-import java.util.concurrent.TimeUnit
 
 data class Savings(
     val id: String,
@@ -38,15 +37,12 @@ data class Savings(
         get() = (targetAmount - currentAmount).coerceAtLeast(0.0)
 
     val daysLeft: Date?
-        @RequiresApi(Build.VERSION_CODES.O)
         get() = endDate?.let {
             if (!isExpired) {
-                val start = LocalDate.now()
-                val end = it.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-                val days = ChronoUnit.DAYS.between(start, end)
-                Date.from(LocalDate.ofEpochDay(days).atStartOfDay(ZoneId.systemDefault()).toInstant())
+                val diff = it.time - Date().time
+                Date(diff)
             } else {
-                Date(0) // or null
+                Date(0)
             }
         }
 }
