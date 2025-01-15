@@ -8,6 +8,8 @@ import java.util.Calendar
 data class PassbookState(
     val incomeState: PassBookEntryState = PassBookEntryState(),
     val expenseState: PassBookEntryState = PassBookEntryState(),
+    val monthlyIncome: Double = 0.0,
+    val monthlyExpense: Double = 0.0
 )
 
 data class PassBookEntryState(

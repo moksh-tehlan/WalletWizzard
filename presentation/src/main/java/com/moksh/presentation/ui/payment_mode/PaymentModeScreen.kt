@@ -97,6 +97,7 @@ private fun PaymentModeScreenView(
                 Icon(
                     modifier = Modifier.clickable(
                         onClick = {
+                            onAction(PaymentModeAction.OnBackPress)
                         },
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }

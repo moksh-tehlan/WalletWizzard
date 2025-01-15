@@ -23,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,6 +37,7 @@ import com.moksh.presentation.ui.common.GapSpace
 import com.moksh.presentation.ui.common.ObserveAsEvents
 import com.moksh.presentation.ui.common.WizzardPrimaryButton
 import com.moksh.presentation.ui.common.WizzardTextField
+import com.moksh.presentation.ui.common.clickable
 import com.moksh.presentation.ui.passbook_entry.viewmodel.PassbookEntryAction
 import com.moksh.presentation.ui.passbook_entry.viewmodel.PassbookEntryEvent
 import com.moksh.presentation.ui.passbook_entry.viewmodel.PassbookEntryState
@@ -45,6 +47,7 @@ import com.moksh.presentation.ui.passbook_entry.viewmodel.PassbookEntryViewModel
 fun AddNewPassbookEntry(
     viewModel: PassbookEntryViewModel = hiltViewModel(),
     onTransactionSave: () -> Unit,
+    onBackPress:()->Unit,
     onSelectCategory: (transactionType: TransactionType, categoryId: String?) -> Unit,
     onPaymentModeChange: (paymentModeId: String?) -> Unit,
     selectedCategoryId: String? = null,
@@ -62,6 +65,7 @@ fun AddNewPassbookEntry(
             )
 
             is PassbookEntryEvent.OnPaymentModeChange -> onPaymentModeChange(it.paymentModeId)
+            is PassbookEntryEvent.OnBackPress -> onBackPress()
         }
     }
     LaunchedEffect(selectedCategoryId) {
@@ -99,6 +103,9 @@ private fun AddNewPassbookEntryView(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
+                    modifier = Modifier.clickable {
+                        onAction(PassbookEntryAction.OnBackPress)
+                    },
                     imageVector = backArrowIcon,
                     contentDescription = "Back Arrow",
                     tint = WizzardWhite

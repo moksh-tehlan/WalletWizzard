@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.moksh.domain.model.response.PaymentMode
 import com.moksh.domain.model.response.SaveTransaction
 import com.moksh.domain.model.response.TransactionType
@@ -79,6 +80,15 @@ class PassbookEntryViewModel @Inject constructor(
             is PassbookEntryAction.SaveTransaction -> saveTransaction()
             is PassbookEntryAction.UpdateSelectedCategoryAndPaymentMode -> updateSelectedCategoryAndPaymentMode(action.categoryId,action.paymentId)
             is PassbookEntryAction.OnPaymentModeChange -> onPaymentModeChange()
+            is PassbookEntryAction.OnBackPress -> onBackPress()
+        }
+    }
+
+    private fun onBackPress() {
+        viewModelScope.launch {
+            _passbookEvent.emit(
+                PassbookEntryEvent.OnBackPress
+            )
         }
     }
 

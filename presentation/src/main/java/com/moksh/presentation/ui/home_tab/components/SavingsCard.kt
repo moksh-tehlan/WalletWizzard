@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +35,6 @@ import java.util.Calendar
 import java.util.Date
 import java.util.UUID
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SavingsCard(
     modifier: Modifier = Modifier,
@@ -49,13 +49,15 @@ fun SavingsCard(
             Box(
                 modifier = Modifier
                     .size(60.dp)
-                    .clip(RoundedCornerShape(3.dp))
+                    .clip(CircleShape)
                     .background(color = Color(pocket.progressBarColor)),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "📱",
-                    style = MaterialTheme.typography.headlineMedium
+                    text = pocket.name.take(2).uppercase(),
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Medium
+                    )
                 )
             }
             Gap(size = 10.dp)
@@ -101,7 +103,6 @@ fun SavingsCard(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Preview
 private fun SavingsCardPreview() {
@@ -112,9 +113,7 @@ private fun SavingsCardPreview() {
                 name = "Samsung Watch Ultra",
                 targetAmount = 100000.0,
                 currentAmount = 25000.0,  // 25% progress
-                endDate = Calendar.getInstance().apply {
-                    add(Calendar.MONTH, 3)  // 3 months from now
-                }.time,
+                endDate = Date(),
                 progressBarColor = Color.Blue.toArgb(),  // Using Android's Color class
                 notes = "Saving for my dream watch",
                 isActive = true,

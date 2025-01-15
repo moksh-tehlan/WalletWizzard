@@ -1,6 +1,5 @@
 package com.moksh.presentation.ui.books_tab
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,9 +18,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,7 +43,9 @@ import com.moksh.presentation.core.theme.WizzardYellow
 import com.moksh.presentation.core.theme.addIcon
 import com.moksh.presentation.core.theme.passBookIcon
 import com.moksh.presentation.ui.common.Gap
+import com.moksh.presentation.ui.common.clickable
 import com.moksh.presentation.ui.home_tab.components.BalanceItem
+import kotlinx.coroutines.launch
 
 @Composable
 fun BooksTab() {
@@ -47,7 +55,31 @@ fun BooksTab() {
 @Composable
 private fun BooksTabView() {
     val scrollState = rememberScrollState()
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            sheetState = sheetState,
+            onDismissRequest = {
+                scope.launch {
+                    sheetState.hide().also {
+                        showBottomSheet = false
+                    }
+                }
+            }
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Box(Modifier.fillMaxWidth().height(150.dp)){ Text(text = "Testing Sheet") }
+            }
+        }
+    }
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -130,12 +162,17 @@ private fun BooksTabView() {
                 .clip(CircleShape)
                 .background(WizzardWhite)
                 .padding(5.dp)
-                .align(Alignment.BottomEnd),
+                .align(Alignment.BottomEnd)
+                .clickable {
+                    scope.launch {
+                        showBottomSheet = true
+                        sheetState.expand()
+                    }
+                },
             imageVector = addIcon,
             tint = WizzardBlack,
             contentDescription = "Add"
         )
-
     }
 }
 
@@ -183,12 +220,10 @@ private fun BooksOverview() {
             }
         }
     }
-
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 @Preview
 private fun BooksTabPreview() {
-    WalletWizzardTheme { Scaffold { BooksTabView() } }
+    WalletWizzardTheme { Scaffold {it -> BooksTabView() } }
 }

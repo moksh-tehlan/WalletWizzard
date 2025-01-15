@@ -11,5 +11,6 @@ sealed interface PassbookEntryAction {
     data class PaymentModeChanged(val paymentMode: PaymentMode) : PassbookEntryAction
     data class DateChanged(val date: String) : PassbookEntryAction
     data object SaveTransaction : PassbookEntryAction
+    data object OnBackPress : PassbookEntryAction
     data class UpdateSelectedCategoryAndPaymentMode(val categoryId:String?,val paymentId:String?) : PassbookEntryAction
 }

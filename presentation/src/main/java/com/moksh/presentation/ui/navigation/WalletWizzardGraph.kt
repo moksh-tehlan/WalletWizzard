@@ -162,6 +162,9 @@ private fun NavGraphBuilder.homeGraph(navController: NavController) {
                 onTransactionSave = {
                     navController.popBackStack()
                 },
+                onBackPress = {
+                    navController.popBackStack()
+                },
                 onSelectCategory = { transactionType, category ->
                     navController.navigate(
                         HomeRoutes.CategoryScreen(
