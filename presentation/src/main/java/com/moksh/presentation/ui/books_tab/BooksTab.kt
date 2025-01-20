@@ -6,15 +6,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -31,9 +35,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moksh.presentation.core.theme.WalletWizzardTheme
 import com.moksh.presentation.core.theme.WizzardBlack
 import com.moksh.presentation.core.theme.WizzardBlue
@@ -42,30 +49,46 @@ import com.moksh.presentation.core.theme.WizzardWhite
 import com.moksh.presentation.core.theme.WizzardYellow
 import com.moksh.presentation.core.theme.addIcon
 import com.moksh.presentation.core.theme.passBookIcon
+import com.moksh.presentation.ui.books_tab.components.viewmodel.AddBookState
+import com.moksh.presentation.ui.books_tab.components.viewmodel.BookState
+import com.moksh.presentation.ui.books_tab.components.viewmodel.BooksAction
+import com.moksh.presentation.ui.books_tab.components.viewmodel.BooksViewModel
 import com.moksh.presentation.ui.common.Gap
+import com.moksh.presentation.ui.common.WizzardPrimaryButton
+import com.moksh.presentation.ui.common.WizzardTextField
 import com.moksh.presentation.ui.common.clickable
 import com.moksh.presentation.ui.home_tab.components.BalanceItem
+import com.moksh.presentation.ui.passbook_entry.viewmodel.PassbookEntryAction
 import kotlinx.coroutines.launch
 
 @Composable
-fun BooksTab() {
-    BooksTabView()
+fun BooksTab(
+    viewModel: BooksViewModel = hiltViewModel()
+) {
+    BooksTabView(
+        state = viewModel.bookState.collectAsStateWithLifecycle().value,
+        addNewBookState = viewModel.addBookState.collectAsStateWithLifecycle().value,
+        onAction = viewModel::onAction
+    )
 }
 
 @Composable
-private fun BooksTabView() {
+private fun BooksTabView(
+    state: BookState,
+    addNewBookState: AddBookState,
+    onAction: (BooksAction) -> Unit,
+) {
     val scrollState = rememberScrollState()
-    var showBottomSheet by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    if (showBottomSheet) {
+    if (state.addNewBottomSheetVisible) {
         ModalBottomSheet(
             sheetState = sheetState,
             onDismissRequest = {
                 scope.launch {
                     sheetState.hide().also {
-                        showBottomSheet = false
+                        onAction(BooksAction.ToggleBottomSheet)
                     }
                 }
             }
@@ -76,7 +99,25 @@ private fun BooksTabView() {
                     .padding(10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Box(Modifier.fillMaxWidth().height(150.dp)){ Text(text = "Testing Sheet") }
+                WizzardTextField(
+                    heading = "Add Book",
+                    hint = "eg. Moksh's A/C",
+                    value = addNewBookState.bookName,
+                    onValueChange = { onAction(BooksAction.OnNameChange(it)) },
+                )
+                Gap(size = 30.dp)
+                WizzardPrimaryButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp),
+                    text = "SAVE",
+                    isLoading = addNewBookState.buttonLoading,
+                    onClick = {
+                        onAction(BooksAction.OnSaveBook)
+                    },
+                    enabled = true,
+                )
+                Gap(size = WindowInsets.ime.asPaddingValues().calculateBottomPadding()/2)
             }
         }
     }
@@ -157,7 +198,7 @@ private fun BooksTabView() {
         }
         Icon(
             modifier = Modifier
-                .padding(bottom = 120.dp, end = 10.dp)
+                .padding(bottom = 100.dp, end = 10.dp)
                 .size(50.dp)
                 .clip(CircleShape)
                 .background(WizzardWhite)
@@ -165,7 +206,7 @@ private fun BooksTabView() {
                 .align(Alignment.BottomEnd)
                 .clickable {
                     scope.launch {
-                        showBottomSheet = true
+                        onAction(BooksAction.ToggleBottomSheet)
                         sheetState.expand()
                     }
                 },
@@ -225,5 +266,13 @@ private fun BooksOverview() {
 @Composable
 @Preview
 private fun BooksTabPreview() {
-    WalletWizzardTheme { Scaffold {it -> BooksTabView() } }
+    WalletWizzardTheme {
+        Scaffold { it ->
+            BooksTabView(
+                state = BookState(),
+                addNewBookState = AddBookState(),
+                onAction = {}
+            )
+        }
+    }
 }
