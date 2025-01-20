@@ -93,6 +93,17 @@ jobs:
           name: app-release
           path: app/build/outputs/apk/production/release/app-production-release.apk
 
+      - name: Upload to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.7.0
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_CREDENTIALS }}
+          groups: testers
+          file: 'app/build/outputs/apk/production/release/app-production-release.apk'
+          releaseNotes: |
+            Build Number: ${{ github.run_number }}
+            Commit: ${{ github.event.head_commit.message }}
+
       - name: Send build to Slack
         uses: moksh-tehlan/slack-build-notify-action@v1.1.9
         with:
