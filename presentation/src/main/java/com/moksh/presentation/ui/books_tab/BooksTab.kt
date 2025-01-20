@@ -117,7 +117,6 @@ private fun BooksTabView(
                     },
                     enabled = true,
                 )
-                Gap(size = WindowInsets.ime.asPaddingValues().calculateBottomPadding()/2)
             }
         }
     }

@@ -58,7 +58,7 @@ class BooksViewModel @Inject constructor() : ViewModel() {
     private fun onSaveBook() {
         _addBookState.update {
             it.copy(
-                buttonLoading = true,
+                buttonLoading = false,
             )
         }
         toggleBottomSheet()
